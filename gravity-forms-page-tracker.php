@@ -50,8 +50,6 @@ function gravity_forms_page_tracker_activate () {
   global $wpdb, $gform_form_page_table;
  
   $charset_collate = $wpdb->get_charset_collate();
-  
-  error_log($charset_collate);
 
   // Check if table exists before trying to create it
   if($wpdb->get_var("SHOW TABLES LIKE '$gform_form_page_table'") != $gform_form_page_table){
