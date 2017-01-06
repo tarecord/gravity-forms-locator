@@ -28,6 +28,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /*
  * Registered Actions, Filters and Hooks
  */
+
+//////////////////////////////////////////
+//Registered Actions, Filters and Hooks //
+//////////////////////////////////////////
+
  register_activation_hook( __FILE__, 'gravity_forms_page_tracker_activate' );
  register_deactivation_hook( __FILE__, 'gravity_forms_page_tracker_deactivate' );
  register_uninstall_hook( __FILE__, 'gravity_forms_page_tracker_uninstall' );
@@ -38,6 +43,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /*
  * Global Variables
  */
+ 
+ 
+//////////////////////
+// global Variables //
+//////////////////////
 
 global $gform_form_page_table, $wpdb;
 $gform_form_page_table = $wpdb->prefix . "gform_form_page";
