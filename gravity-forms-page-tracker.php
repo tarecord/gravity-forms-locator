@@ -58,8 +58,8 @@ function gravity_forms_page_tracker_activate () {
         $sql = "CREATE TABLE $gform_form_page_table (
           id mediumint(9) NOT NULL AUTO_INCREMENT,
           form_id mediumint(8) NOT NULL,
-          PRIMARY KEY (id)
           post_id bigint(20) NOT NULL,
+          PRIMARY KEY (id)
         ) $charset_collate;";
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
