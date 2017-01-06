@@ -47,34 +47,39 @@ $gform_form_page_table = $wpdb->prefix . "gform_form_page";
 // Install table when activated
 function gravity_forms_page_tracker_activate () {
   
-  global $wpdb, $gform_form_page_table;
- 
-  $charset_collate = $wpdb->get_charset_collate();
+    global $wpdb, $gform_form_page_table;
+   
+    $charset_collate = $wpdb->get_charset_collate();
 
-  // Check if table exists before trying to create it
-  if($wpdb->get_var("SHOW TABLES LIKE '$gform_form_page_table'") != $gform_form_page_table){
-    $sql = "CREATE TABLE $gform_form_page_table (
-      id mediumint(9) NOT NULL AUTO_INCREMENT,
-      form_id mediumint(8) NOT NULL,
-      page_id bigint(20) NOT NULL,
-      PRIMARY KEY (id)
-    ) $charset_collate;";
+    // Check if table exists before trying to create it
+    if($wpdb->get_var("SHOW TABLES LIKE '$gform_form_page_table'") != $gform_form_page_table){
+      
+        // Create the table
+        $sql = "CREATE TABLE $gform_form_page_table (
+          id mediumint(9) NOT NULL AUTO_INCREMENT,
+          form_id mediumint(8) NOT NULL,
+          page_id bigint(20) NOT NULL,
+          PRIMARY KEY (id)
+        ) $charset_collate;";
 
-    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-    dbDelta( $sql );
-  }
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $sql );
+        
+    }
   
 }
 
 // Remove table when uninstalled
 function gravity_forms_page_tracker_uninstall () {
   
-  global $wpdb, $gform_form_page_table;
-  
-  // Check if table exists before trying to delete it
-  if($wpdb->get_var("SHOW TABLES LIKE '$gform_form_page_table'") == $gform_form_page_table){
-    $wpdb->query("DROP TABLE $gform_form_page_table;");
-  }
+    global $wpdb, $gform_form_page_table;
+    
+    // Check if table exists before trying to delete it
+    if($wpdb->get_var("SHOW TABLES LIKE '$gform_form_page_table'") == $gform_form_page_table){
+      
+        $wpdb->query("DROP TABLE $gform_form_page_table;");
+        
+    }
   
 }
 
