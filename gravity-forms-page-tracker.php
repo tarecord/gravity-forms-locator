@@ -25,9 +25,18 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-/*
- * Registered Actions, Filters and Hooks
+/**
+ * Since this plugin depends on Gravity Forms, we need to check if
+ * Gravity Forms is currently active.
+ * 
+ * If not, display an error to the user explaining why this plugin
+ * could not be activated.
+ * 
  */
+require_once( 'classes/WPS_Extend_Plugin.php' );
+
+new WPS_Extend_Plugin( 'gravityforms/gravityforms.php', __FILE__, '2.1.1', 'gform-page-tracker' );
+
 
 //////////////////////////////////////////
 //Registered Actions, Filters and Hooks //
