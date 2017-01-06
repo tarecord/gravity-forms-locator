@@ -49,10 +49,6 @@ new WPS_Extend_Plugin( 'gravityforms/gravityforms.php', __FILE__, '2.1.1', 'gfor
 // Update the table with the page/form id when the post is saved
  add_action( 'save_post', 'update_form_page_id' );
  
-/*
- * Global Variables
- */
- 
  
 //////////////////////
 // global Variables //
