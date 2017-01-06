@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Gravity Forms Page Tracker Addon
+Plugin Name: Gravity Forms - Page Tracker Addon
 Plugin URI: https://gitlab.com/tanner.record/gravity-forms-page-tracker-addon
 Description: A simple addon that displays what page a form is on.
 Version: 0.1
@@ -9,7 +9,7 @@ Author URI: http://www.northstarmarketing.com
 License: GPL2
 */
 /*
-Copyright 2017  Tanner Record  (email : tanner.record@gmail.com)
+Copyright (c) 2017  Tanner Record  (email : tanner.record@gmail.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as 
