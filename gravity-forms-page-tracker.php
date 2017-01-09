@@ -48,6 +48,10 @@ new WPS_Extend_Plugin( 'gravityforms/gravityforms.php', __FILE__, '2.1.1', 'gfor
 
 // Update the table with the page/form id when the post is saved
  add_action( 'save_post', 'update_form_page_id' );
+
+
+// Add location as a view option in the main form view
+ add_filter( 'gform_toolbar_menu', 'add_location_menu_item', 10, 2 );
  
 // Add action link to view posts that contain the form
  add_filter( 'gform_form_actions', 'add_form_post_action', 10, 2 );
@@ -169,4 +173,24 @@ function add_form_post_action($actions, $form_id){
 					'priority'     => 699,
 				);
   return $actions;
+}
+
+function add_location_menu_item($menu_items, $form_id){
+  
+  $edit_capabilities = array( 'gravityforms_edit_forms' );
+  
+  $menu_items['locate'] = array(
+			'label'        => __( 'Locate', 'gravityforms' ),
+			'short_label' => esc_html__( 'Locate', 'gravityforms' ),
+			'icon'         => '<i class="fa fa-map-marker fa-lg"></i>',
+			'title'        => __( 'Locate pages this form appears on', 'gravityforms' ),
+			'url'          => '?page=gf_edit_forms&view=location&id=' . $form_id,
+			'menu_class'   => 'gf_form_toolbar_editor',
+			//'link_class'   => GFForms::toolbar_class( 'editor' ),
+			'capabilities' => $edit_capabilities,
+			'priority'     => 699,
+		);
+
+  return $menu_items;
+  
 }
