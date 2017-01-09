@@ -49,6 +49,8 @@ new WPS_Extend_Plugin( 'gravityforms/gravityforms.php', __FILE__, '2.1.1', 'gfor
 // Update the table with the page/form id when the post is saved
  add_action( 'save_post', 'update_form_page_id' );
 
+// Add location page template for displaying associated form page/posts
+ add_action( 'gform_view', 'add_location_view' );
 
 // Add location as a view option in the main form view
  add_filter( 'gform_toolbar_menu', 'add_location_menu_item', 10, 2 );
@@ -193,4 +195,8 @@ function add_location_menu_item($menu_items, $form_id){
 
   return $menu_items;
   
+}
+
+function add_location_view( $view, $id ){
+  require_once( plugin_dir_path( __FILE__ ) . '/includes/location.php' );
 }
