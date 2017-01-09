@@ -49,6 +49,9 @@ new WPS_Extend_Plugin( 'gravityforms/gravityforms.php', __FILE__, '2.1.1', 'gfor
 // Update the table with the page/form id when the post is saved
  add_action( 'save_post', 'update_form_page_id' );
  
+// Add action link to view posts that contain the form
+ add_filter( 'gform_form_actions', 'add_form_post_action', 10, 2 );
+ 
  
 //////////////////////
 // global Variables //
@@ -155,4 +158,15 @@ function update_form_page_id($post_id) {
         
     }
   
+}
+
+function add_form_post_action($actions, $form_id){
+  $actions['locate'] = array(
+					'label'        => __( 'Locate', 'gravityforms' ),
+					'title'        => __( 'Locate pages this form appears on', 'gravityforms' ),
+					'url'          => '?page=gf_edit_forms&view=location&id=' . $form_id,
+					'capabilities' => 'gravityforms_edit_forms',
+					'priority'     => 699,
+				);
+  return $actions;
 }
