@@ -64,7 +64,7 @@ class Form_Locations_Table extends WP_List_Table {
     
     $post = get_post($item['post_id']);
     
-    return '<a href="post.php?post='. $post->ID .'&action=edit">Edit</a> | <a href="post.php?post='. $post->ID .'&action=edit">View</a>';
+    return '<a href="post.php?post='. $post->ID .'&action=edit">Edit</a> | <a href="' . get_post_permalink($post->ID) . '">View</a>';
   }
   
   function get_columns(){
