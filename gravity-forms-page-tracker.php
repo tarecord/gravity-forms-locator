@@ -197,6 +197,17 @@ function add_location_menu_item($menu_items, $form_id){
   
 }
 
+
+// Include WP_List_Table class
+if ( ! class_exists( 'WP_List_Table' ) ) {
+	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+}
+
+// Include the Form_Locations_Table class
+if ( ! class_exists( 'Form_Locations_Table' ) ) {
+	require_once( plugin_dir_path( __FILE__ ) . 'classes/Form_Locations_Table.php' );
+}
+
 function add_location_view( $view, $id ){
   require_once( plugin_dir_path( __FILE__ ) . '/includes/location.php' );
 }
