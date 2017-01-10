@@ -48,12 +48,15 @@ new WPS_Extend_Plugin( 'gravityforms/gravityforms.php', __FILE__, '2.1.1', 'gfor
 
 // Update the table with the page/form id when the post is saved
  add_action( 'save_post', 'update_form_page_id' );
+ 
+// Add new menu item to show list of all forms and their post relations
+ add_filter( 'gform_addon_navigation', 'add_location_menu_item' );
 
 // Add location page template for displaying associated form page/posts
- add_action( 'gform_view', 'add_location_view' );
+ // add_action( 'gform_view', 'add_location_view' );
 
 // Add location as a view option in the main form view
- add_filter( 'gform_toolbar_menu', 'add_location_menu_item', 10, 2 );
+ add_filter( 'gform_toolbar_menu', 'add_location_form_edit_menu_option', 10, 2 );
  
 // Add action link to view posts that contain the form
  add_filter( 'gform_form_actions', 'add_form_post_action', 10, 2 );
@@ -167,26 +170,26 @@ function update_form_page_id($post_id) {
 }
 
 function add_form_post_action($actions, $form_id){
-  $actions['locate'] = array(
-					'label'        => __( 'Locate', 'gravityforms' ),
-					'title'        => __( 'Locate pages this form appears on', 'gravityforms' ),
-					'url'          => '?page=gf_edit_forms&view=location&id=' . $form_id,
+  $actions['locations'] = array(
+					'label'        => __( 'Locations', 'gravityforms' ),
+					'title'        => __( 'Posts this form appears on', 'gravityforms' ),
+					'url'          => '?page=locations&form_id=' . $form_id,
 					'capabilities' => 'gravityforms_edit_forms',
 					'priority'     => 699,
 				);
   return $actions;
 }
 
-function add_location_menu_item($menu_items, $form_id){
+function add_location_form_edit_menu_option($menu_items, $form_id){
   
   $edit_capabilities = array( 'gravityforms_edit_forms' );
   
-  $menu_items['locate'] = array(
-			'label'        => __( 'Locate', 'gravityforms' ),
-			'short_label' => esc_html__( 'Locate', 'gravityforms' ),
+  $menu_items['locations'] = array(
+			'label'        => __( 'Locations', 'gravityforms' ),
+			'short_label' => esc_html__( 'Locations', 'gravityforms' ),
 			'icon'         => '<i class="fa fa-map-marker fa-lg"></i>',
-			'title'        => __( 'Locate pages this form appears on', 'gravityforms' ),
-			'url'          => '?page=gf_edit_forms&view=location&id=' . $form_id,
+			'title'        => __( 'Posts this form appears on', 'gravityforms' ),
+			'url'          => '?page=locations&form_id=' . $form_id,
 			'menu_class'   => 'gf_form_toolbar_editor',
 			//'link_class'   => GFForms::toolbar_class( 'editor' ),
 			'capabilities' => $edit_capabilities,
@@ -206,6 +209,11 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 // Include the Form_Locations_Table class
 if ( ! class_exists( 'Form_Locations_Table' ) ) {
 	require_once( plugin_dir_path( __FILE__ ) . 'classes/Form_Locations_Table.php' );
+}
+
+function add_location_menu_item( $menu_items ) {
+    $menu_items[] = array( "name" => "locations", "label" => "Form Locations", "callback" => "add_location_view", "permission" => "edit_posts" );
+    return $menu_items;
 }
 
 function add_location_view( $view, $id ){
