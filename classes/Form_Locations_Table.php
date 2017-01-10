@@ -50,20 +50,57 @@ class Form_Locations_Table extends WP_List_Table {
     
     $post = get_post($item['post_id']);
     
-    return '<a href="post.php?post='. $post->ID .'&action=edit">'. $post->post_title .'</a>';
+    return $post->post_title;
+  }
+  
+  function column_post_actions($item){
+    
+    $post = get_post($item['post_id']);
+    
+    return '<a href="post.php?post='. $post->ID .'&action=edit">Edit</a> | <a href="post.php?post='. $post->ID .'&action=edit">View</a>';
+  }
+  
+  function column_form_id($item){
+    
+    $form = GFAPI::get_form( $item['form_id'] );
+    
+    return $form['title'];
+  }
+  
+  function column_form_actions($item){
+    
+    $form = GFAPI::get_form( $item['form_id'] );
+    
+    return '<a href="admin.php?page=gf_edit_forms&id='. $form['id'] .'">Edit</a> | <a href="post.php?post='. $form['id'].'&action=edit">View</a>';
   }
   
   function get_columns(){
     $columns = array(
-      'post_id' => 'Title',
+      'post_id' => __('Post Title', 'gform-page-tracker'),
+      'post_actions' => __('Post Actions', 'gform-page-tracker'),
+      'form_id' => __('Form Title', 'gform-page-tracker'),
+      'form_actions' => __('Form Actions', 'gform-page-tracker'),
     );
     return $columns;
+  }
+  
+  /**
+   * Columns to make sortable.
+   *
+   * @return array
+   */
+  public function get_sortable_columns() {
+    $sortable_columns = array(
+      'post_id' => array( 'post_id', true ),
+      'form_id' => array( 'form_id', false )
+    );
+
+    return $sortable_columns;
   }
 
   function prepare_items() {
     $columns = $this->get_columns();
     $hidden = array();
-    $sortable = array();
     $this->_column_headers = array($columns, $hidden, $sortable);
     $this->items = self::get_locations();
   }
