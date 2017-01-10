@@ -46,6 +46,13 @@ class Form_Locations_Table extends WP_List_Table {
     return $result;
   }
   
+  function column_form_id($item){
+    
+    $form = GFAPI::get_form( $item['form_id'] );
+    
+    return '<a href="?page=gf_edit_forms&id=' . $form['id'] . '">' . $form['title'] . '</a>';
+  }
+  
   function column_post_id($item){
     
     $post = get_post($item['post_id']);
@@ -60,26 +67,11 @@ class Form_Locations_Table extends WP_List_Table {
     return '<a href="post.php?post='. $post->ID .'&action=edit">Edit</a> | <a href="post.php?post='. $post->ID .'&action=edit">View</a>';
   }
   
-  function column_form_id($item){
-    
-    $form = GFAPI::get_form( $item['form_id'] );
-    
-    return $form['title'];
-  }
-  
-  function column_form_actions($item){
-    
-    $form = GFAPI::get_form( $item['form_id'] );
-    
-    return '<a href="admin.php?page=gf_edit_forms&id='. $form['id'] .'">Edit</a> | <a href="post.php?post='. $form['id'].'&action=edit">View</a>';
-  }
-  
   function get_columns(){
     $columns = array(
+      'form_id' => __('Form Title', 'gform-page-tracker'),
       'post_id' => __('Post Title', 'gform-page-tracker'),
       'post_actions' => __('Post Actions', 'gform-page-tracker'),
-      'form_id' => __('Form Title', 'gform-page-tracker'),
-      'form_actions' => __('Form Actions', 'gform-page-tracker'),
     );
     return $columns;
   }
