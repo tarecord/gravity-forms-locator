@@ -37,185 +37,263 @@ require_once( 'classes/WPS_Extend_Plugin.php' );
 
 new WPS_Extend_Plugin( 'gravityforms/gravityforms.php', __FILE__, '2.1.1', 'gform-page-tracker' );
 
+// Handle activation and uninstalling
+register_activation_hook( __FILE__, array( 'Gravity_Forms_Page_Tracker', 'activate' ) );
+register_uninstall_hook( __FILE__, array( 'Gravity_Forms_Page_Tracker', 'uninstall' ) );
 
-//////////////////////////////////////////
-//Registered Actions, Filters and Hooks //
-//////////////////////////////////////////
+// Now, for the main event...
+class Gravity_Forms_Page_Tracker {
 
- register_activation_hook( __FILE__, 'gravity_forms_page_tracker_activate' );
- register_deactivation_hook( __FILE__, 'gravity_forms_page_tracker_deactivate' );
- register_uninstall_hook( __FILE__, 'gravity_forms_page_tracker_uninstall' );
-
-// Update the table with the page/form id when the post is saved
- add_action( 'save_post', 'update_form_page_id' );
- 
-// Add new menu item to show list of all forms and their post relations
- add_filter( 'gform_addon_navigation', 'add_location_menu_item' );
-
-// Add location page template for displaying associated form page/posts
- // add_action( 'gform_view', 'add_location_view' );
-
-// Add location as a view option in the main form view
- add_filter( 'gform_toolbar_menu', 'add_location_form_edit_menu_option', 10, 2 );
- 
-// Add action link to view posts that contain the form
- add_filter( 'gform_form_actions', 'add_form_post_action', 10, 2 );
- 
- 
-//////////////////////
-// global Variables //
-//////////////////////
-
-global $gform_form_page_table, $wpdb;
-$gform_form_page_table = $wpdb->prefix . "gform_form_page";
-
-
-
-// Install table when activated
-function gravity_forms_page_tracker_activate () {
-  
-    global $wpdb, $gform_form_page_table;
-   
-    $charset_collate = $wpdb->get_charset_collate();
-
-    // Check if table exists before trying to create it
-    if($wpdb->get_var("SHOW TABLES LIKE '$gform_form_page_table'") != $gform_form_page_table){
+    /**
+     * Construct the instance
+     */
+    public function __construct() {
+        
+        // Update the table with the page/form id when the post is saved
+        add_action( 'save_post', array( $this, 'update_form_page_id' ) );
+        
+        // Add new menu item to show list of all forms and their post relations
+        add_filter( 'gform_addon_navigation', array( $this, 'add_location_menu_item') );
+        
+        // Add location as a view option in the main form view
+        add_filter( 'gform_toolbar_menu', array( $this, 'add_location_form_edit_menu_option' ), 10, 2 );
+        
+        // Add action link to view posts that contain the form
+        add_filter( 'gform_form_actions', array( $this , 'add_form_post_action' ), 10, 2 );
+        
+        add_action( 'plugins_loaded', array( $this, 'load_classes' ) );
       
-        // Create the table
-        $sql = "CREATE TABLE $gform_form_page_table (
-          id mediumint(9) NOT NULL AUTO_INCREMENT,
-          form_id mediumint(8) NOT NULL,
-          post_id bigint(20) NOT NULL,
-          PRIMARY KEY (id)
-        ) $charset_collate;";
-
-        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-        dbDelta( $sql );
-        
-    }
-  
-}
-
-// Remove table when uninstalled
-function gravity_forms_page_tracker_uninstall () {
-  
-    global $wpdb, $gform_form_page_table;
-    
-    // Check if table exists before trying to delete it
-    if($wpdb->get_var("SHOW TABLES LIKE '$gform_form_page_table'") == $gform_form_page_table){
-      
-        $wpdb->query("DROP TABLE $gform_form_page_table;");
-        
-    }
-  
-}
-
-/**
- * Save page/form relation in the database on save
- * 
- * @param  int  $post_id the post id returned from the save_post action
- * 
- * @return  null
- */
-function update_form_page_id($post_id) {
-  
-    // If this is a revision just return
-    if ( wp_is_post_revision( $post_id ) )
-    
-    return;
-    
-    
-    global $wpdb, $gform_form_page_table;
-      
-    // Grab the content from the form post
-    $content = stripslashes($_POST['content']);
-    
-    $pattern = get_shortcode_regex();
-
-    // Check if shortcode exists in the content
-    if (   preg_match_all( '/'. $pattern .'/s', $content, $matches ) && array_key_exists( 2, $matches ) && in_array( 'gravityform', $matches[2] ) ){
-        
-        // Use the match to extract the form id from the shortcode
-        preg_match('~id="(.*)\"~', $matches[3][0], $form_id);
-        
-        // Convert the form id to an int
-        $form_id = (int) $form_id[1];
     }
     
-    
-    // Add the relationship to the table
-    if($wpdb->get_var("SHOW TABLES LIKE '$gform_form_page_table'") == $gform_form_page_table){
+    /**
+     * Create the form post table when the plugin is activated
+     * 
+     * @return void
+     */
+    public static function activate() {
+      
+        global $wpdb;
         
-        // Check to see if the form/post relation already exists in the table
-        $form_post_count = $wpdb->get_var("SELECT COUNT(*) FROM `$gform_form_page_table` WHERE form_id='$form_id' AND post_id='$post_id'");
-        
-        if($form_post_count < 1){
-        
-            $wpdb->insert(
-              	$gform_form_page_table,
-              	array(
-              		'form_id' => $form_id,
-              		'post_id' => $post_id
-              	),
-              	array(
-              		'%d',
-              		'%d'
-              	)
-            );
+        // Define the table Name
+        $gform_form_page_table = $wpdb->prefix . "gform_form_page";
+       
+        $charset_collate = $wpdb->get_charset_collate();
+
+        // Check if table exists before trying to create it
+        if($wpdb->get_var("SHOW TABLES LIKE '$gform_form_page_table'") != $gform_form_page_table){
           
+            // Create the table
+            $sql = "CREATE TABLE $gform_form_page_table (
+              id mediumint(9) NOT NULL AUTO_INCREMENT,
+              form_id mediumint(8) NOT NULL,
+              post_id bigint(20) NOT NULL,
+              PRIMARY KEY (id)
+            ) $charset_collate;";
+
+            require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+            dbDelta( $sql );
+            
         }
         
+        require_once plugin_dir_path( __FILE__ ) . '/classes/WP_Async_Request.php';
+        require_once plugin_dir_path( __FILE__ ) . '/classes/WP_Background_Process.php';
+        require_once plugin_dir_path( __FILE__ ) . '/classes/WP_Scan_Existing_Forms.php';
+        
+        $scan_site_process = new WP_Scan_Existing_Forms();
+        
+        $items = array('one', 'two', 'three');
+        
+        foreach ( $items as $item ) {
+            error_log($item);
+            $scan_site_process->push_to_queue( $item );
+        }
+        
+        $scan_site_process->save()->dispatch();
+      
+    }
+    
+    /**
+     * Remove the form post table when plugin is uninstalled
+     * 
+     * @return void
+     */
+    public static function uninstall () {
+      
+        global $wpdb;
+        
+        // Define the table Name
+        $gform_form_page_table = $wpdb->prefix . "gform_form_page";
+        
+        // Check if table exists before trying to delete it
+        if($wpdb->get_var("SHOW TABLES LIKE '$gform_form_page_table'") == $gform_form_page_table){
+          
+            $wpdb->query("DROP TABLE $gform_form_page_table;");
+            
+        }
+      
+    }
+    
+    /**
+     * Save page/form relation in the database on save
+     * 
+     * @param  int  $post_id the post id returned from the save_post action
+     * 
+     * @return  null
+     */
+    public function update_form_page_id($post_id) {
+      
+        // If this is a revision just return
+        if ( wp_is_post_revision( $post_id ) )
+        
+        return;
+        
+        
+        global $wpdb, $gform_form_page_table;
+          
+        // Grab the content from the form post
+        $content = stripslashes($_POST['content']);
+        
+        $pattern = get_shortcode_regex();
+
+        $form_id = check_for_form($content, $pattern);
+        
+        add_form_post_relation($form_id, $post_id);
+      
+    }
+    
+    /**
+     * Checks for the form shortcode in the post content
+     * 
+     * @param  string $content The post content to search in
+     * @param  string $pattern The regex pattern to match the form shortcode
+     * 
+     * @return int            The form_id found in the content
+     */
+    public function check_for_form( $content, $pattern ) {
+      
+        // Check if shortcode exists in the content
+        if (   preg_match_all( '/'. $pattern .'/s', $content, $matches ) && array_key_exists( 2, $matches ) && in_array( 'gravityform', $matches[2] ) ){
+            
+            // Use the match to extract the form id from the shortcode
+            preg_match('~id="(.*)\"~', $matches[3][0], $form_id);
+            
+            // Convert the form id to an int
+            $form_id = (int) $form_id[1];
+            
+            return $form_id;
+        }
+      
+    }
+    
+    /**
+     * Adds the form_id and post_id to the table
+     * 
+     * @param int|string $form_id
+     * @param int|string $post_id
+     */
+    public function add_form_post_relation( $form_id, $post_id ) {
+      
+        global $wpdb, $gform_form_page_table;
+        
+        // Add the relationship to the table
+        if($wpdb->get_var("SHOW TABLES LIKE '$gform_form_page_table'") == $gform_form_page_table){
+            
+            // Check to see if the form/post relation already exists in the table
+            $form_post_count = $wpdb->get_var("SELECT COUNT(*) FROM `$gform_form_page_table` WHERE form_id='$form_id' AND post_id='$post_id'");
+            
+            if($form_post_count < 1){
+            
+                $wpdb->insert(
+                    $gform_form_page_table,
+                    array(
+                      'form_id' => $form_id,
+                      'post_id' => $post_id
+                    ),
+                    array(
+                      '%d',
+                      '%d'
+                    )
+                );
+              
+            }
+            
+        }
+    }
+    
+    /**
+     * Adds Location link to form menu
+     * 
+     * @param array $actions
+     * @param int $form_id
+     */
+    public function add_form_post_action($actions, $form_id){
+      $actions['locations'] = array(
+    					'label'        => __( 'Locations', 'gravityforms' ),
+    					'title'        => __( 'Posts this form appears on', 'gravityforms' ),
+    					'url'          => '?page=locations&form_id=' . $form_id,
+    					'capabilities' => 'gravityforms_edit_forms',
+    					'priority'     => 699,
+    				);
+      return $actions;
+    }
+    
+    /**
+     * Add Locations link to form edit page
+     * 
+     * @param array $menu_items
+     * @param int $form_id
+     */
+    public function add_location_form_edit_menu_option($menu_items, $form_id){
+      
+      $edit_capabilities = array( 'gravityforms_edit_forms' );
+      
+      $menu_items['locations'] = array(
+    			'label'        => __( 'Locations', 'gravityforms' ),
+    			'short_label' => esc_html__( 'Locations', 'gravityforms' ),
+    			'icon'         => '<i class="fa fa-map-marker fa-lg"></i>',
+    			'title'        => __( 'Posts this form appears on', 'gravityforms' ),
+    			'url'          => '?page=locations&form_id=' . $form_id,
+    			'menu_class'   => 'gf_form_toolbar_editor',
+    			//'link_class'   => GFForms::toolbar_class( 'editor' ),
+    			'capabilities' => $edit_capabilities,
+    			'priority'     => 699,
+    		);
+
+      return $menu_items;
+      
+    }
+    
+    /**
+     * Adds the Form Locations Menu Item
+     * @param array $menu_items
+     */
+    public function add_location_menu_item( $menu_items ) {
+        $menu_items[] = array( "name" => "locations", "label" => "Form Locations", "callback" => array( $this, "add_location_view" ), "permission" => "edit_posts" );
+        return $menu_items;
+    }
+    
+    /**
+     * Add the location view
+     * 
+     * @param string $view
+     * @param int $id
+     */
+    public function add_location_view( $view, $id ){
+        
+        require_once( plugin_dir_path( __FILE__ ) . '/includes/location.php' );
+        
     }
   
 }
-
-function add_form_post_action($actions, $form_id){
-  $actions['locations'] = array(
-					'label'        => __( 'Locations', 'gravityforms' ),
-					'title'        => __( 'Posts this form appears on', 'gravityforms' ),
-					'url'          => '?page=locations&form_id=' . $form_id,
-					'capabilities' => 'gravityforms_edit_forms',
-					'priority'     => 699,
-				);
-  return $actions;
-}
-
-function add_location_form_edit_menu_option($menu_items, $form_id){
-  
-  $edit_capabilities = array( 'gravityforms_edit_forms' );
-  
-  $menu_items['locations'] = array(
-			'label'        => __( 'Locations', 'gravityforms' ),
-			'short_label' => esc_html__( 'Locations', 'gravityforms' ),
-			'icon'         => '<i class="fa fa-map-marker fa-lg"></i>',
-			'title'        => __( 'Posts this form appears on', 'gravityforms' ),
-			'url'          => '?page=locations&form_id=' . $form_id,
-			'menu_class'   => 'gf_form_toolbar_editor',
-			//'link_class'   => GFForms::toolbar_class( 'editor' ),
-			'capabilities' => $edit_capabilities,
-			'priority'     => 699,
-		);
-
-  return $menu_items;
-  
-}
-
 
 // Include WP_List_Table class
 if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+  require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
 // Include the Form_Locations_Table class
 if ( ! class_exists( 'Form_Locations_Table' ) ) {
-	require_once( plugin_dir_path( __FILE__ ) . 'classes/Form_Locations_Table.php' );
+  require_once( plugin_dir_path( __FILE__ ) . 'classes/Form_Locations_Table.php' );
 }
 
-function add_location_menu_item( $menu_items ) {
-    $menu_items[] = array( "name" => "locations", "label" => "Form Locations", "callback" => "add_location_view", "permission" => "edit_posts" );
-    return $menu_items;
-}
-
-function add_location_view( $view, $id ){
-  require_once( plugin_dir_path( __FILE__ ) . '/includes/location.php' );
-}
+$Gravity_Forms_Page_Tracker = new Gravity_Forms_Page_Tracker();

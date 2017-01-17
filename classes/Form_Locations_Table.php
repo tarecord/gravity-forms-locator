@@ -93,7 +93,7 @@ class Form_Locations_Table extends WP_List_Table {
   function prepare_items() {
     $columns = $this->get_columns();
     $hidden = array();
-    $this->_column_headers = array($columns, $hidden, $sortable);
+    $this->_column_headers = array($columns, $hidden);
     $this->items = self::get_locations();
   }
   
