@@ -60,6 +60,30 @@ class Form_Locations_Table extends WP_List_Table {
     return $post->post_title;
   }
   
+  function column_post_status($item){
+    
+    $post = get_post($item['post_id']);
+    
+    if ( $post->post_status == 'publish' || $post->post_status == 'future' || $post->post_status == 'pending' ){
+      
+        return '<span style="color: #21759B;">Published</span>';
+      
+    } else if ( $post->post_status == 'draft' || $post->post_status == 'auto-draft' ) {
+      
+        return 'Draft';
+      
+    } else if ( $post->post_status == 'private' ) {
+      
+        return '<span style="color: #21759B;">Private</span>';
+      
+    } else if ( $post->post_status == 'trash' ) {
+      
+        return '<span style="color: red;">Trashed</span>';
+      
+    }
+    
+  }
+  
   function column_post_actions($item){
     
     $post = get_post($item['post_id']);
@@ -71,6 +95,7 @@ class Form_Locations_Table extends WP_List_Table {
     $columns = array(
       'form_id' => __('Form Title', 'gform-page-tracker'),
       'post_id' => __('Post Title', 'gform-page-tracker'),
+      'post_status' => __('Post Status', 'gform-page-tracker'),
       'post_actions' => __('Post Actions', 'gform-page-tracker'),
     );
     return $columns;

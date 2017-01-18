@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms - Page Tracker Addon
 Plugin URI: https://gitlab.com/tanner.record/gravity-forms-page-tracker-addon
 Description: A simple addon that displays what page a form is on.
-Version: 1.0
+Version: 1.1
 Author: Tanner Record
 Author URI: http://www.northstarmarketing.com
 License: GPL2
@@ -124,7 +124,8 @@ class Gravity_Forms_Page_Tracker {
       $args = array(
         'posts_per_page' => -1,
         'post_type' => array('post', 'page'),
-        'status' => 'publish'
+        // get all types of posts except revisions and posts in the trash
+        'status' => array( 'publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'trash' ),
       );
       
       $posts = get_posts($args);
@@ -197,9 +198,9 @@ class Gravity_Forms_Page_Tracker {
         
         $pattern = get_shortcode_regex();
 
-        $form_id = check_for_form($content, $pattern);
+        $form_id = $this->check_for_form($content, $pattern);
         
-        add_form_post_relation($form_id, $post_id);
+        $this->add_form_post_relation($form_id, $post_id);
       
     }
     
