@@ -124,7 +124,8 @@ class Gravity_Forms_Page_Tracker {
       $args = array(
         'posts_per_page' => -1,
         'post_type' => array('post', 'page'),
-        'status' => 'publish'
+        // get all types of posts except revisions and posts in the trash
+        'status' => array( 'publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'trash' ),
       );
       
       $posts = get_posts($args);
