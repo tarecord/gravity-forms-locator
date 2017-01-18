@@ -146,7 +146,7 @@ class Gravity_Forms_Page_Tracker {
         return;
         
         
-        global $wpdb, $gform_form_page_table;
+        global $wpdb;
           
         // Grab the content from the form post
         $content = stripslashes($_POST['content']);
@@ -191,7 +191,10 @@ class Gravity_Forms_Page_Tracker {
      */
     public function add_form_post_relation( $form_id, $post_id ) {
       
-        global $wpdb, $gform_form_page_table;
+        global $wpdb;
+        
+        // Define the table Name
+        $gform_form_page_table = $wpdb->prefix . "gform_form_page";
         
         // Add the relationship to the table
         if($wpdb->get_var("SHOW TABLES LIKE '$gform_form_page_table'") == $gform_form_page_table){
