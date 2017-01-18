@@ -198,9 +198,9 @@ class Gravity_Forms_Page_Tracker {
         
         $pattern = get_shortcode_regex();
 
-        $form_id = check_for_form($content, $pattern);
+        $form_id = $this->check_for_form($content, $pattern);
         
-        add_form_post_relation($form_id, $post_id);
+        $this->add_form_post_relation($form_id, $post_id);
       
     }
     
