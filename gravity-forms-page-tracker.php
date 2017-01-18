@@ -49,6 +49,8 @@ class Gravity_Forms_Page_Tracker {
      */
     public function __construct() {
         
+        add_action( 'plugins_loaded', array( $this, 'init' ) );
+        
         // Update the table with the page/form id when the post is saved
         add_action( 'save_post', array( $this, 'update_form_page_id' ) );
         
