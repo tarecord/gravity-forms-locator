@@ -53,7 +53,11 @@ class WP_Scan_Existing_Forms extends WP_Background_Process {
    * performed, or, call parent::complete().
    */
   protected function complete() {
+    // Display the success message when scan is complete.
+    set_transient( 'scan_complete', true, 365 * DAY_IN_SECONDS );
+    
     parent::complete();
-    // Show notice to user or perform some other arbitrary task...
   }
+
+  
 }

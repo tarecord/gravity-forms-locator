@@ -64,6 +64,15 @@ class Gravity_Forms_Page_Tracker {
         add_filter( 'gform_form_actions', array( $this , 'add_form_post_action' ), 10, 2 );
         
         add_action( 'init', array( $this, 'process_handler' ) );
+        
+        // If the scan is complete, show a notice to the user
+        if (get_transient('scan_complete')){
+          
+          add_action( 'admin_notices', array( $this, 'scan_complete_notice' ) );
+          
+          delete_transient('scan_complete');
+          
+        }
       
     }
     
@@ -318,6 +327,18 @@ class Gravity_Forms_Page_Tracker {
         
         require_once( plugin_dir_path( __FILE__ ) . '/includes/location.php' );
         
+    }
+    
+    /**
+     * Display a success message to the user when form scan is complete
+     * 
+     */
+    public function scan_complete_notice() {
+        ?>
+        <div class="notice notice-success is-dismissible">
+            <p><?php _e( '<strong>Gravity Forms - Page Tracker Addon:</strong> Full site scan complete. <a href="' . admin_url( 'admin.php?page=locations') . '">View Form Locations</a>', 'gravity-forms-page-tracker-addon' ); ?></p>
+        </div>
+        <?php
     }
   
 }
