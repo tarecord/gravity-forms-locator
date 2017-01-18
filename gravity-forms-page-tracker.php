@@ -96,23 +96,54 @@ class Gravity_Forms_Page_Tracker {
             dbDelta( $sql );
             
         }
-        
-        require_once plugin_dir_path( __FILE__ ) . '/classes/WP_Async_Request.php';
-        require_once plugin_dir_path( __FILE__ ) . '/classes/WP_Background_Process.php';
-        require_once plugin_dir_path( __FILE__ ) . '/classes/WP_Scan_Existing_Forms.php';
-        
-        $scan_site_process = new WP_Scan_Existing_Forms();
-        
-        $items = array('one', 'two', 'three');
-        
-        foreach ( $items as $item ) {
-            error_log($item);
-            $scan_site_process->push_to_queue( $item );
-        }
-        
-        $scan_site_process->save()->dispatch();
       
     }
+    
+    /**
+  	 * Init
+  	 */
+  	public function init() {
+      require_once plugin_dir_path( __FILE__ ) . '/classes/WP_Async_Request.php';
+      require_once plugin_dir_path( __FILE__ ) . '/classes/WP_Background_Process.php';
+      require_once plugin_dir_path( __FILE__ ) . '/classes/WP_Scan_Existing_Forms.php';
+      
+      $this->scan_site_process = new WP_Scan_Existing_Forms();
+  	}
+    
+    public function scan() {
+      
+      $args = array(
+        'posts_per_page' => -1,
+        'post_type' => array('post', 'page'),
+        'status' => 'publish'
+      );
+      
+      $posts = get_posts($args);
+      
+      foreach ( $posts as $post ) {
+          $this->scan_site_process->push_to_queue( $post );
+      }
+      
+      $this->scan_site_process->save()->dispatch();
+    }
+    
+    /**
+  	 * Process handler
+  	 */
+  	public function process_handler() {
+  		if ( ! isset( $_GET['process'] ) || ! isset( $_GET['_wpnonce'] ) ) {
+  			return;
+  		}
+
+  		if ( ! wp_verify_nonce( $_GET['_wpnonce'], 'process') ) {
+  			return;
+  		}
+
+  		if ( 'scan_all_pages' === $_GET['process'] ) {
+  			$this->scan();
+  		}
+      
+  	}
     
     /**
      * Remove the form post table when plugin is uninstalled
