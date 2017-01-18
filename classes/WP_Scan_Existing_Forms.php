@@ -19,11 +19,9 @@ class WP_Scan_Existing_Forms extends WP_Background_Process {
    * @return mixed
    */
   protected function task( $post ) {
-    error_log('Process Item: ' . $post->post_title );
+    
     // Grab the content from the form post
     $content = stripslashes($post->post_content);
-    
-    error_log(var_dump($post));
     
     $pattern = get_shortcode_regex();
     
