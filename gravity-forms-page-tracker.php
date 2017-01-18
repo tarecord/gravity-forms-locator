@@ -62,6 +62,8 @@ class Gravity_Forms_Page_Tracker {
         
         // Add action link to view posts that contain the form
         add_filter( 'gform_form_actions', array( $this , 'add_form_post_action' ), 10, 2 );
+        
+        add_action( 'init', array( $this, 'process_handler' ) );
       
     }
     
