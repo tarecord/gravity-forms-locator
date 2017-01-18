@@ -22,7 +22,7 @@ class Form_Locations_Table extends WP_List_Table {
    *
    * @return mixed
    */
-  public static function get_locations($per_page = 10, $page_number = 1) {
+  public static function get_locations($per_page, $page_number = 1) {
 
     global $wpdb;
     
@@ -36,10 +36,14 @@ class Form_Locations_Table extends WP_List_Table {
       $sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
       $sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
     }
+    
+    if (isset($per_page)){
+      
+      $sql .= " LIMIT $per_page";
 
-    $sql .= " LIMIT $per_page";
-
-    $sql .= ' OFFSET ' . ( $page_number - 1 ) * $per_page;
+      $sql .= ' OFFSET ' . ( $page_number - 1 ) * $per_page;
+      
+    }
 
     $result = $wpdb->get_results( $sql, 'ARRAY_A' );
 
