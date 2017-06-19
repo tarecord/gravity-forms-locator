@@ -1,15 +1,12 @@
 <?php
 /*
-Plugin Name: Gravity Forms - Page Tracker Addon
-Plugin URI: https://gitlab.com/tanner.record/gravity-forms-page-tracker-addon
-Description: A simple addon that displays what page a form is on.
-Version: 1.2
+Plugin Name: Gravity Form Locator
+Plugin URI: https://github.com/tarecord/gravity-forms-locator/
+Description: Simple add-on for Gravity Forms that scans your website in the background and shows a list of each form published with the page or post that it is published on.
+Version: 1.0.0
 Author: Tanner Record
-Author URI: http://www.northstarmarketing.com
+Author URI: http://www.tannerrecord.com
 License: GPL2
-*/
-/*
-Copyright (c) 2017  Tanner Record  (email : tanner.record@gmail.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as
