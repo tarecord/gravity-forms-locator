@@ -350,7 +350,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 
 // Include the Form_Locations_Table class
 if ( ! class_exists( 'Form_Locations_Table' ) ) {
-	require_once( plugin_dir_path( __FILE__ ) . 'classes/Form_Locations_Table.php' );
+	require_once( plugin_dir_path( __FILE__ ) . 'classes/form-locations-table.php' );
 }
 
 $gravity_forms_page_tracker = new Gravity_Forms_Page_Tracker();
