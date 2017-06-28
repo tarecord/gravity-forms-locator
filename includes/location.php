@@ -7,7 +7,17 @@
 <?php
 	$locations_table = new Form_Locations_Table();
 	$locations_table->prepare_items();
-	$locations_table->display();
+	if ( ! empty($locations_table->items) ) {
+
+		$locations_table->display();
+
+	} else {
+	?>
+
+	<h2>No Forms Found</h2>
+
+	<?php
+	}
 ?>
 
 </div>
