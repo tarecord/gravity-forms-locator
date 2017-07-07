@@ -21,4 +21,4 @@ Install Gravity Form Locator via the plugin directory, or upload the files manua
 If you love this plugin, feel free to buy me a cheeseburger.
 I'm also okay with a slice of pizza or a cup of coffee. Your choice!
 
-https://www.cash.me/$tannerrecord
+[https://www.cash.me/$tannerrecord](http://www.cash.me/$tannerrecord)
