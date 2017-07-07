@@ -1,7 +1,7 @@
 === Gravity Form Locator ===
 Requires at least: 3.0 or Later
 Tested up to: 4.8.0
-Stable tag: 1.3.0
+Stable tag: 1.0.1
 Contributors: tarecord
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -21,6 +21,8 @@ Additionally, when editing a form in the backend, there is a "Locations" tab so 
 == Installation ==
 
 Install Gravity Form Locator via the plugin directory, or upload the files manually to your server and follow the on-screen instructions.
+
+**[Gravity Forms](http://www.gravityforms.com/) version 2.0 or later must be installed for this plugin to work.**
 
 == Frequently Asked Questions ==
 
@@ -44,12 +46,18 @@ Help me improve this plugin on GitHub by submitting a pull request or adding an 
 
 == Changelog ==
 
+= 1.0.1 =
+* Fixed bug causing form locations to be duplicated in the location table
+* Added correct link for donations
+
 = 1.0.0 =
 * Initial Release
 
 == Donate ==
 
-If you love this plugin, feel free to buy me a cheeseburger.
-I'm also okay with a slice of pizza or a cup of coffee. Your choice!
+If you love this plugin, feel free to buy me a cheeseburger :hamburger:.
+I'm also okay with a slice of pizza :pizza: or a cup of coffee :coffee: . Your choice!
 
-https://www.cash.me/$tannerrecord
+<a href="https://www.cash.me/$tannerrecord">https://www.cash.me/$tannerrecord</a>
+
+I hope this plugin provides as much value for you as it has for me.
