@@ -22,6 +22,8 @@ Additionally, when editing a form in the backend, there is a "Locations" tab so 
 
 Install Gravity Form Locator via the plugin directory, or upload the files manually to your server and follow the on-screen instructions.
 
+**[Gravity Forms](http://www.gravityforms.com/) version 2.0 or later must be installed for this plugin to work.**
+
 == Frequently Asked Questions ==
 
 = How does the plugin find the forms? =
