@@ -221,18 +221,18 @@ class Gravity_Form_Locator {
 		global $wpdb;
 
 		// Define the table Name.
-		$gform_form_page_table = $wpdb->prefix . 'gform_form_page';
+		$wpdb->gform_form_page_table = $wpdb->prefix . 'gform_form_page';
 
 		// Add the relationship to the table.
-		if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE '%s'", $gform_form_page_table ) ) == $gform_form_page_table ) {
+		if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE '%s'", $wpdb->gform_form_page_table ) ) == $wpdb->gform_form_page_table ) {
 
 			// Check to see if the form/post relation already exists in the table.
-			$form_post_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM %s WHERE form_id='%d' AND post_id='%d'", $gform_form_page_table, $form_id, $post_id ) );
+			$form_post_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->gform_form_page_table WHERE form_id='%d' AND post_id='%d'", $form_id, $post_id ) );
 
 			if ( $form_post_count < 1 ) {
 
 				$wpdb->insert(
-					$gform_form_page_table,
+					$wpdb->gform_form_page_table,
 					array(
 						'form_id' => $form_id,
 						'post_id' => $post_id,
