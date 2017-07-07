@@ -30,7 +30,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * could not be activated.
  *
  */
-require_once( 'classes/class-wps-extend-plugin.php' );
+require_once( 'vendor/class-wps-extend-plugin.php' );
 require_once( 'classes/class-gravity-form-locator.php' );
 
 new WPS_Extend_Plugin( 'gravityforms/gravityforms.php', __FILE__, '2.0', 'gravity-form-locator' );

@@ -70,8 +70,8 @@ class Gravity_Form_Locator {
 	*/
 	public function init() {
 
-		require_once plugin_dir_path( __FILE__ ) . 'class-wp-async-request.php';
-		require_once plugin_dir_path( __FILE__ ) . 'class-wp-background-process.php';
+		require_once plugin_dir_path( __DIR__ ) . 'vendor/class-wp-async-request.php';
+		require_once plugin_dir_path( __DIR__ ) . 'vendor/class-wp-background-process.php';
 		require_once plugin_dir_path( __FILE__ ) . 'class-wp-scan-existing-forms.php';
 
 		$this->scan_site_process = new WP_Scan_Existing_Forms();
