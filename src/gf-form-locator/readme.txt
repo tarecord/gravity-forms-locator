@@ -51,7 +51,9 @@ Help me improve this plugin on GitHub by submitting a pull request or adding an 
 
 == Donate ==
 
-If you love this plugin, feel free to buy me a cheeseburger.
-I'm also okay with a slice of pizza or a cup of coffee. Your choice!
+If you love this plugin, feel free to buy me a cheeseburger :hamburger:.
+I'm also okay with a slice of pizza :pizza: or a cup of coffee :coffee: . Your choice!
 
-https://www.cash.me/$tannerrecord
+<a href="https://www.cash.me/$tannerrecord">https://www.cash.me/$tannerrecord</a>
+
+I hope this plugin provides as much value for you as it has for me.
