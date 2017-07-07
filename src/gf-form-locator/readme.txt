@@ -1,7 +1,7 @@
 === Gravity Form Locator ===
 Requires at least: 3.0 or Later
 Tested up to: 4.8.0
-Stable tag: 1.3.0
+Stable tag: 1.0.1
 Contributors: tarecord
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -45,6 +45,10 @@ Help me improve this plugin on GitHub by submitting a pull request or adding an 
 3. Another new quick link to view all the pages/posts the current form is published on.
 
 == Changelog ==
+
+= 1.0.1 =
+* Fixed bug causing form locations to be duplicated in the location table
+* Added correct link for donations
 
 = 1.0.0 =
 * Initial Release
