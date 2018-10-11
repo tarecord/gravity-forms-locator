@@ -15,10 +15,3 @@ Additionally, when editing a form in the backend, there is a "Locations" tab so 
 ## Installation ##
 
 Install Gravity Form Locator via the plugin directory, or upload the files manually to your server and follow the on-screen instructions.
-
-## Donate ##
-
-If you love this plugin, feel free to buy me a cheeseburger.
-I'm also okay with a slice of pizza or a cup of coffee. Your choice!
-
-[https://www.cash.me/$tannerrecord](http://www.cash.me/$tannerrecord)
