@@ -35,7 +35,7 @@ class Form_Locations_Table extends WP_List_Table {
 	 *
 	 * @return mixed
 	 */
-	public static function get_locations( $per_page, $page_number = 1 ) {
+	public static function get_locations( $per_page = 10, $page_number = 1 ) {
 
 		global $wpdb;
 
