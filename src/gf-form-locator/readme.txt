@@ -52,12 +52,3 @@ Help me improve this plugin on GitHub by submitting a pull request or adding an 
 
 = 1.0.0 =
 * Initial Release
-
-== Donate ==
-
-If you love this plugin, feel free to buy me a cheeseburger :hamburger:.
-I'm also okay with a slice of pizza :pizza: or a cup of coffee :coffee: . Your choice!
-
-<a href="https://www.cash.me/$tannerrecord">https://www.cash.me/$tannerrecord</a>
-
-I hope this plugin provides as much value for you as it has for me.
