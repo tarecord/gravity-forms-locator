@@ -300,7 +300,7 @@ class Gravity_Form_Locator {
 	 *
 	 * @return array An array of menu items.
 	 */
-	public function add_location_menu_item( $menu_items ) {
+	public function add_location_menu_item( $menu_items = array() ) {
 		$menu_items[] = array(
 			'name' => 'locations',
 			'label' => 'Form Locations',
@@ -318,7 +318,7 @@ class Gravity_Form_Locator {
 	 *
 	 * @return void
 	 */
-	public function add_location_view( $view, $id ) {
+	public function add_location_view( $view = null, $id = 0) {
 
 		require_once( plugin_dir_path( __DIR__ ) . 'includes/location.php' );
 
