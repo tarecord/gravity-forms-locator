@@ -70,7 +70,6 @@ deploy:
       php: 7.2
   # Deploy to WordPress Repository
   - provider: script
-    skip_cleanup: true
     script:
       - php build/plugin-build $WP_ORG_PASSWORD $WP_ORG_USERNAME gf-form-locator
     on:
