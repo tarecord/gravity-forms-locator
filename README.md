@@ -1,8 +1,9 @@
-# Gravity Form Locator #
+# Gravity Form Locator
+![](https://travis-ci.org/tarecord/gravity-forms-locator.svg?branch=master)
 
 Simple add-on for Gravity Forms that scans your website in the background and shows a list of each form published with the page or post that it is published on.
 
-## Description ##
+## Description
 
 The Gravity Form Locator plugin aims to solve a big hole in the design of Gravity Forms' backend interface.
 
@@ -12,6 +13,6 @@ This plugin solves that problem by adding a "Form Locations" page within the Gra
 
 Additionally, when editing a form in the backend, there is a "Locations" tab so you can view all the pages or posts where that form is currently used. It even includes forms located in drafts or private pages.
 
-## Installation ##
+## Installation
 
 Install Gravity Form Locator via the plugin directory, or upload the files manually to your server and follow the on-screen instructions.

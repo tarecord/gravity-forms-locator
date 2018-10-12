@@ -1,7 +1,8 @@
 === Gravity Form Locator ===
-Requires at least: 3.0 or Later
-Tested up to: 4.8.0
-Stable tag: 1.0.1
+Requires at least: 4.8 or Later
+Tested up to: 4.9.8
+Stable tag: 1.0.2
+Requires PHP: 5.6
 Contributors: tarecord
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -45,6 +46,9 @@ Help me improve this plugin on GitHub by submitting a pull request or adding an 
 3. Another new quick link to view all the pages/posts the current form is published on.
 
 == Changelog ==
+
+= 1.0.2 =
+* Fix bug causing plugin to crash on PHP 7
 
 = 1.0.1 =
 * Fixed bug causing form locations to be duplicated in the location table
