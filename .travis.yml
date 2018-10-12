@@ -53,3 +53,16 @@ before_script:
 script:
   - phpcs src/gf-form-locator
   - phpunit
+
+before_deploy:
+  - cd src/gf-form-locator
+  - zip -r ../../gf-form-locator.zip .
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script:
+    - php build/plugin-build $WP_ORG_PASSWORD $WP_ORG_USERNAME gf-form-locator
+  on:
+    branch: master
+    php: 7.2
