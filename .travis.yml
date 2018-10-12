@@ -60,6 +60,14 @@ before_deploy:
   - cd ../../
 
 deploy:
+  # Upload .zip to Github release
+  - provider: releases
+    api_key: "$GITHUB_OAUTH_TOKEN"
+    file: "gf-form-locator.zip"
+    skip_cleanup: true
+    on:
+      tags: true
+      php: 7.2
   # Deploy to WordPress Repository
   - provider: script
     skip_cleanup: true
@@ -68,10 +76,3 @@ deploy:
     on:
       tags: true
       php: 7.2
-  # Upload .zip to Github release
-  - provider: releases
-    api_key: "$GITHUB_OAUTH_TOKEN"
-    file: "gf-form-locator.zip"
-    skip_cleanup: true
-    on:
-      tags: true
