@@ -18,10 +18,11 @@ class Form_Locations_Table extends WP_List_Table {
 	 */
 	public function __construct() {
 
-		parent::__construct( array(
-			'singular' => __( 'Location', 'gform-page-tracker' ), // singular name of the listed records
-			'plural'   => __( 'Locations', 'gform-page-tracker' ), // plural name of the listed records
-			'ajax'     => false, // should this table support ajax?
+		parent::__construct(
+			array(
+				'singular' => __( 'Location', 'gform-page-tracker' ), // singular name of the listed records.
+				'plural'   => __( 'Locations', 'gform-page-tracker' ), // plural name of the listed records.
+				'ajax'     => false, // should this table support ajax?
 			)
 		);
 
@@ -30,8 +31,8 @@ class Form_Locations_Table extends WP_List_Table {
 	/**
 	 * Retrieve customer’s data from the database
 	 *
-	 * @param int $per_page 		The number of entries to list on a page.
-	 * @param int $page_number 	The page number.
+	 * @param int $per_page     The number of entries to list on a page.
+	 * @param int $page_number  The page number.
 	 *
 	 * @return mixed
 	 */
@@ -41,7 +42,7 @@ class Form_Locations_Table extends WP_List_Table {
 
 		if ( ! empty( $_GET['form_id'] ) ) {
 			$form_id = sanitize_text_field( wp_unslash( $_GET['form_id'] ) );
-			$sql = "SELECT * FROM {$wpdb->prefix}gform_form_page WHERE form_id = {$form_id}";
+			$sql     = "SELECT * FROM {$wpdb->prefix}gform_form_page WHERE form_id = {$form_id}";
 		} else {
 			$sql = "SELECT * FROM {$wpdb->prefix}gform_form_page";
 		}
@@ -49,7 +50,7 @@ class Form_Locations_Table extends WP_List_Table {
 		if ( ! empty( $_REQUEST['orderby'] ) ) {
 
 			$orderby = sanitize_text_field( wp_unslash( $_REQUEST['orderby'] ) );
-			$order = sanitize_text_field( wp_unslash( $_REQUEST['order'] ) );
+			$order   = sanitize_text_field( wp_unslash( $_REQUEST['order'] ) );
 
 			$sql .= ' ORDER BY ' . esc_sql( $orderby );
 			$sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $order ) : ' ASC';
@@ -63,7 +64,7 @@ class Form_Locations_Table extends WP_List_Table {
 
 		}
 
-		$result = $wpdb->get_results( $sql, 'ARRAY_A' );
+		$result = $wpdb->get_results( $sql, 'ARRAY_A' ); //phpcs:ignore
 
 		return $result;
 	}
@@ -148,9 +149,9 @@ class Form_Locations_Table extends WP_List_Table {
 	 */
 	function get_columns() {
 		$columns = array(
-			'form_id' => __( 'Form Title', 'gform-page-tracker' ),
-			'post_id' => __( 'Post Title', 'gform-page-tracker' ),
-			'post_status' => __( 'Post Status', 'gform-page-tracker' ),
+			'form_id'      => __( 'Form Title', 'gform-page-tracker' ),
+			'post_id'      => __( 'Post Title', 'gform-page-tracker' ),
+			'post_status'  => __( 'Post Status', 'gform-page-tracker' ),
 			'post_actions' => __( 'Post Actions', 'gform-page-tracker' ),
 		);
 		return $columns;
@@ -176,10 +177,10 @@ class Form_Locations_Table extends WP_List_Table {
 	 * @return void
 	 */
 	function prepare_items() {
-		$columns = $this->get_columns();
-		$hidden = array();
+		$columns               = $this->get_columns();
+		$hidden                = array();
 		$this->_column_headers = array( $columns, $hidden );
-		$this->items = self::get_locations();
+		$this->items           = self::get_locations();
 	}
 
 }

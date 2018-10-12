@@ -60,7 +60,7 @@ class Gravity_Form_Locator {
 		$charset_collate = $wpdb->get_charset_collate();
 
 		// Check if table exists before trying to create it.
-		if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE '%s'", $gform_form_page_table ) ) != $gform_form_page_table ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $gform_form_page_table ) ) != $gform_form_page_table ) {
 
 			// Create the table.
 			$sql = "CREATE TABLE $gform_form_page_table (
@@ -101,9 +101,9 @@ class Gravity_Form_Locator {
 
 		$args = array(
 			'posts_per_page' => -1,
-			'post_type' => array( 'post', 'page' ),
+			'post_type'      => array( 'post', 'page' ),
 			// get all types of posts except revisions and posts in the trash.
-			'status' => array( 'publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'trash' ),
+			'status'         => array( 'publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'trash' ),
 		);
 
 		$posts = get_posts( $args );
@@ -149,7 +149,7 @@ class Gravity_Form_Locator {
 		$gform_form_page_table = $wpdb->prefix . 'gform_form_page';
 
 		// Check if table exists before trying to delete it.
-		if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE '%s'", $gform_form_page_table ) ) == $gform_form_page_table ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $gform_form_page_table ) ) == $gform_form_page_table ) {
 
 			$wpdb->query( $wpdb->prepare( 'DROP TABLE %s;', $gform_form_page_table ) );
 
@@ -213,8 +213,8 @@ class Gravity_Form_Locator {
 	/**
 	 * Adds the form_id and post_id to the table
 	 *
-	 * @param int|string $form_id 	The id of the form.
-	 * @param int|string $post_id	The id of the post.
+	 * @param int|string $form_id  The id of the form.
+	 * @param int|string $post_id  The id of the post.
 	 */
 	public function add_form_post_relation( $form_id, $post_id ) {
 
@@ -224,10 +224,10 @@ class Gravity_Form_Locator {
 		$wpdb->gform_form_page_table = $wpdb->prefix . 'gform_form_page';
 
 		// Add the relationship to the table.
-		if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE '%s'", $wpdb->gform_form_page_table ) ) == $wpdb->gform_form_page_table ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->gform_form_page_table ) ) == $wpdb->gform_form_page_table ) {
 
 			// Check to see if the form/post relation already exists in the table.
-			$form_post_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->gform_form_page_table WHERE form_id='%d' AND post_id='%d'", $form_id, $post_id ) );
+			$form_post_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->gform_form_page_table} WHERE form_id = %d AND post_id = %d", $form_id, $post_id ) );
 
 			if ( $form_post_count < 1 ) {
 
@@ -250,10 +250,10 @@ class Gravity_Form_Locator {
 	/**
 	 * Adds Location link to form menu
 	 *
-	 * @param array $actions	The original array of actions.
-	 * @param int   $form_id	The form id.
+	 * @param array $actions  The original array of actions.
+	 * @param int   $form_id  The form id.
 	 *
-	 * @return $actions	The array of actions.
+	 * @return $actions The array of actions.
 	 */
 	public function add_form_post_action( $actions, $form_id ) {
 		$actions['locations'] = array(
@@ -269,8 +269,8 @@ class Gravity_Form_Locator {
 	/**
 	 * Add Locations link to form edit page
 	 *
-	 * @param array $menu_items		The menu items to override.
-	 * @param int   $form_id		The form id.
+	 * @param array $menu_items  The menu items to override.
+	 * @param int   $form_id     The form id.
 	 *
 	 * @return array  The menu items to add to the table.
 	 */
@@ -280,7 +280,7 @@ class Gravity_Form_Locator {
 
 		$menu_items['locations'] = array(
 			'label'        => __( 'Locations', 'gravityforms' ),
-			'short_label' => esc_html__( 'Locations', 'gravityforms' ),
+			'short_label'  => esc_html__( 'Locations', 'gravityforms' ),
 			'icon'         => '<i class="fa fa-map-marker fa-lg"></i>',
 			'title'        => __( 'Posts this form appears on', 'gravityforms' ),
 			'url'          => '?page=locations&form_id=' . $form_id,
@@ -302,9 +302,9 @@ class Gravity_Form_Locator {
 	 */
 	public function add_location_menu_item( $menu_items = array() ) {
 		$menu_items[] = array(
-			'name' => 'locations',
-			'label' => 'Form Locations',
-			'callback' => array( $this, 'add_location_view' ),
+			'name'       => 'locations',
+			'label'      => 'Form Locations',
+			'callback'   => array( $this, 'add_location_view' ),
 			'permission' => 'edit_posts',
 		);
 		return $menu_items;
@@ -313,12 +313,12 @@ class Gravity_Form_Locator {
 	/**
 	 * Add the location view
 	 *
-	 * @param string $view 	The view to use the table in.
-	 * @param int    $id	The id of the menu item.
+	 * @param string $view  The view to use the table in.
+	 * @param int    $id    The id of the menu item.
 	 *
 	 * @return void
 	 */
-	public function add_location_view( $view = null, $id = 0) {
+	public function add_location_view( $view = null, $id = 0 ) {
 
 		require_once( plugin_dir_path( __DIR__ ) . 'includes/location.php' );
 
