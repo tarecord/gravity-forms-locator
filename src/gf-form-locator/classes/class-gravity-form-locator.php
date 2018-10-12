@@ -330,11 +330,11 @@ class Gravity_Form_Locator {
 	 * @return void
 	 */
 	public function scan_complete_notice() {
-	?>
+		?>
 		<div class="notice notice-success is-dismissible">
 		<p><?php echo '<strong>Gravity Forms - Page Tracker Addon:</strong> Full site scan complete. <a href="' . admin_url( 'admin.php?page=locations' ) . '">View Form Locations</a>', 'gravity-forms-page-tracker-addon'; ?></p>
 		</div>
-	<?php
+		<?php
 	}
 }
 

@@ -24,12 +24,9 @@ if ( ! empty( $locations_table->items ) ) {
 	$locations_table->display();
 
 } else {
-?>
-
-<h2>No Forms Found</h2>
-
-<?php
-}
-?>
+	?>
+	<h2>No Forms Found</h2>
+	<?php
+} ?>
 
 </div>
