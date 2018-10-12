@@ -27,6 +27,7 @@ if ( ! empty( $locations_table->items ) ) {
 	?>
 	<h2>No Forms Found</h2>
 	<?php
-} ?>
+}
+?>
 
 </div>
