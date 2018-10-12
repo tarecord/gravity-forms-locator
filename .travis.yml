@@ -11,32 +11,49 @@ branches:
   only:
     - master
 
-php:
-  - 7.0
-  - 7.1
-
 env:
-  - WP_VERSION=latest WP_MULTISITE=0
-  - WP_VERSION=3.0 or Later WP_MULTISITE=0
-  - WP_VERSION=4.8.0 WP_MULTISITE=0
+  global:
+    - PATH="$TRAVIS_BUILD_DIR/vendor/bin:$PATH"
+    - WP_CLI_BIN_DIR="$TRAVIS_BUILD_DIR/vendor/bin"
 
 matrix:
+  fast_finish: true
   include:
+    - php: 7.2
+      env: WP_VERSION=latest
+    - php: 7.1
+      env: WP_VERSION=latest
+    - php: 7.0
+      env: WP_VERSION=latest
     - php: 5.6
-      env: WP_VERSION=latest WP_MULTISITE=1
+      env: WP_VERSION=latest
+    - php: 5.6
+      env: WP_VERSION=4.0
+    - php: 5.6
+      env: WP_VERSION=trunk
+    - php: 5.6
+      env: WP_TRAVISCI=phpcs
+  allow_failures:
+    - php: 5.6
+      env: WP_TRAVISCI=phpcs
 
 before_script:
-  - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - composer install
   - |
-    if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then
-      composer global require "phpunit/phpunit=5.7.*"
-    else
-      composer global require "phpunit/phpunit=4.8.*"
+    if [[ ! -z "$WP_VERSION" ]] ; then
+      bash bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1 $WP_VERSION
+      if [[ ${TRAVIS_PHP_VERSION:0:2} == "5." ]]; then
+        composer global require "phpunit/phpunit=4.8.*"
+      else
+        composer global require "phpunit/phpunit=5.7.*"
+      fi
     fi
   - |
-    composer global require wp-coding-standards/wpcs
-    phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
+    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
+      composer global require wp-coding-standards/wpcs
+      phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
+    fi
 
 script:
   - phpcs src/gf-form-locator
