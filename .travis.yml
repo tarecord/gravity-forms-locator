@@ -27,7 +27,7 @@ matrix:
     - php: 5.6
       env: WP_VERSION=latest
     - php: 5.6
-      env: WP_VERSION=4.0
+      env: WP_VERSION=4.8
     - php: 5.6
       env: WP_VERSION=trunk
     - php: 5.6
@@ -65,6 +65,7 @@ deploy:
     script:
       - php build/plugin-build $WP_ORG_PASSWORD $WP_ORG_USERNAME gf-form-locator
     on:
+      tags: true
       branch: master
       php: 7.2
   # Upload .zip to Github release
