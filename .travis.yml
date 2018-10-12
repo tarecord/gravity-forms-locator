@@ -59,10 +59,18 @@ before_deploy:
   - cd ../../
 
 deploy:
-  provider: script
-  skip_cleanup: true
-  script:
-    - php build/plugin-build $WP_ORG_PASSWORD $WP_ORG_USERNAME gf-form-locator
-  on:
-    branch: master
-    php: 7.2
+  # Deploy to WordPress Repository
+  - provider: script
+    skip_cleanup: true
+    script:
+      - php build/plugin-build $WP_ORG_PASSWORD $WP_ORG_USERNAME gf-form-locator
+    on:
+      branch: master
+      php: 7.2
+  # Upload .zip to Github release
+  - provider: releases
+    api_key: "$GITHUB_OAUTH_TOKEN"
+    file: "gf-form-locator.zip"
+    skip_cleanup: true
+    on:
+      tags: true
