@@ -73,13 +73,13 @@ echo "done" . PHP_EOL;
 echo "Pulling down SVN Repository...";
 echo `svn co https://plugins.svn.wordpress.org/$PLUGIN_SLUG svn`;
 echo "done" . PHP_EOL;
-echo `cd svn/trunk`;
 echo `rsync -r $PLUGIN_SLUG/ svn/trunk`;
 echo `rsync -r $PLUGIN_SLUG/ svn/tags/$version`;
 echo `svn stat svn/ | grep '^\?' | awk '{print $2}' | xargs -I x svn add x@`;
 echo `svn stat svn/ | grep '^\!' | awk '{print $2}' | xargs -I x svn rm --force x@`;
 echo `svn stat svn/`;
 echo "Committing repository to WordPress..." . PHP_EOL;
+echo `cd svn`;
 echo `svn ci --no-auth-cache --username $WP_ORG_USERNAME --password $WP_ORG_PASSWORD -m "Deploy version $version"`;
 if ( $cleanup ) {
 	echo `rm -Rf "$dest_dir"`;
