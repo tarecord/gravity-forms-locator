@@ -200,7 +200,7 @@ class Gravity_Form_Locator {
 		if ( preg_match_all( '/' . $pattern . '/s', $content, $matches ) && array_key_exists( 2, $matches ) && in_array( 'gravityform', $matches[2] ) ) {
 
 			// Use the match to extract the form id from the shortcode.
-			preg_match( '~id="(.*)\"~', $matches[3][0], $form_id );
+			preg_match( '~id="(\d)"~', $matches[3][0], $form_id );
 
 			// Convert the form id to an int.
 			$form_id = (int) $form_id[1];
