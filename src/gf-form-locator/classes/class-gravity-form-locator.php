@@ -62,7 +62,7 @@ class Gravity_Form_Locator {
 	public function init() {
 
 		// Update the table with the page/form id when the post is saved.
-		add_action( 'save_post', array( $this, 'update_form_page_id' ) );
+		add_action( 'save_post', array( $this, 'update_form_page_id' ), 10, 3 );
 
 		// Add new menu item to show list of all forms and their post relations.
 		add_filter( 'gform_addon_navigation', array( $this, 'add_location_menu_item' ) );
@@ -166,30 +166,39 @@ class Gravity_Form_Locator {
 	/**
 	 * Save page/form relation in the database on save
 	 *
-	 * @param int $post_id the post id returned from the save_post action.
+	 * @param int    $post_id The post id returned from the save_post action.
+	 * @param object $post    The post object.
+	 * @param bool   $update  Whether the save is updating an existing post or not.
 	 *
 	 * @return  void
 	 */
-	public function update_form_page_id( $post_id ) {
+	public function update_form_page_id( $post_id, $post, $update ) {
 
-		// If this is a revision just return.
+		// If this is a revision don't do anything.
 		if ( wp_is_post_revision( $post_id ) ) {
-
 			return;
-
 		}
 
-		global $wpdb;
-
 		// Grab the content from the form post.
-		$content = stripslashes( $_POST['content'] );
-
+		$content = stripslashes( $post->post_content );
 		$pattern = get_shortcode_regex();
-
 		$form_id = $this->check_for_form( $content, $pattern );
 
-		$this->add_form_post_relation( $form_id, $post_id );
+		// If this is an existing post being updated.
+		if ( $update ) {
 
+			// Remove form references and rescan post.
+			global $wpdb;
+			$wpdb->delete( $wpdb->prefix . 'gform_form_page', array( 'post_id' => $post_id ) );
+			$this->add_form_post_relation( $form_id, $post_id );
+
+		} else {
+
+			// Does the post have a form?
+			if ( $form_id ) {
+				$this->add_form_post_relation( $form_id, $post_id );
+			}
+		}
 	}
 
 	/**
