@@ -179,10 +179,10 @@ class Gravity_Form_Locator {
 			return;
 		}
 
-		// Grab the content from the form post.
-		$content = stripslashes( $post->post_content );
-		$pattern = get_shortcode_regex();
-		$form_id = $this->check_for_form( $content, $pattern );
+		// Grab the content from the post.
+		$content  = stripslashes( $post->post_content );
+		$pattern  = get_shortcode_regex();
+		$form_ids = $this->check_for_forms( $content, $pattern );
 
 		// If this is an existing post being updated.
 		if ( $update ) {
@@ -190,13 +190,13 @@ class Gravity_Form_Locator {
 			// Remove form references and rescan post.
 			global $wpdb;
 			$wpdb->delete( $wpdb->prefix . 'gform_form_page', array( 'post_id' => $post_id ) );
-			$this->add_form_post_relation( $form_id, $post_id );
+			$this->add_form_post_relations( $form_ids, $post_id );
 
 		} else {
 
-			// Does the post have a form?
+			// Does the post have any forms?
 			if ( $form_id ) {
-				$this->add_form_post_relation( $form_id, $post_id );
+				$this->add_form_post_relations( $form_ids, $post_id );
 			}
 		}
 	}
@@ -207,53 +207,69 @@ class Gravity_Form_Locator {
 	 * @param  string $content The post content to search in.
 	 * @param  string $pattern The regex pattern to match the form shortcode.
 	 *
-	 * @return int|bool The form_id if found in the content or false.
+	 * @return array The form shortcodes
 	 */
-	public function check_for_form( $content, $pattern ) {
+	public function check_for_forms( $content, $pattern ) {
 
 		// Check if shortcode exists in the content.
 		if ( preg_match_all( '/' . $pattern . '/s', $content, $matches ) && array_key_exists( 2, $matches ) && in_array( 'gravityform', $matches[2] ) ) {
-
-			return $this->get_shortcode_id( $matches[0][0] );
+			return $this->get_shortcode_ids( $matches[0] );
 		}
 
 		return false;
 	}
 
 	/**
-	 * Gets the id from the form shortcode.
+	 * Gets the ids from the form shortcodes.
 	 *
-	 * @param string $shortcode The shortcode to get the ID from.
+	 * @param string $shortcodes The shortcodes to get the IDs from.
 	 */
-	public function get_shortcode_id( $shortcode ) {
+	public function get_shortcode_ids( $shortcodes = array() ) {
 
-		// Use the match to extract the form id from the shortcode.
-		if ( preg_match( '~id="(\d)"~', $shortcode, $form_id ) ) {
+		$form_ids = array();
 
-			// If we have the form id, return it as an integer.
-			return (int) $form_id[1];
+		foreach ( $shortcodes as $shortcode ) {
+			// Use the match to extract the form id from the shortcode.
+			if ( preg_match( '~id="(\d)"~', $shortcode, $form_id ) ) {
+
+				// If we have the form id, add it to the array.
+				array_push( $form_ids, intval( $form_id[1] ) );
+			}
 		}
+
+		if ( ! empty( $form_ids ) ) {
+			return $form_ids;
+		}
+
+		return false;
 	}
 
+
 	/**
-	 * Adds the form_id and post_id to the table
+	 * Creates a relationship between form_ids and a post.
 	 *
-	 * @param int|string $form_id  The id of the form.
-	 * @param int|string $post_id  The id of the post.
+	 * @param array $form_ids The ids of the forms.
+	 * @param int   $post_id  The id of the post.
 	 */
-	public function add_form_post_relation( $form_id, $post_id ) {
+	public function add_form_post_relations( $form_ids = array(), $post_id ) {
 
 		global $wpdb;
 
 		// Define the table Name.
 		$wpdb->gform_form_page_table = $wpdb->prefix . 'gform_form_page';
 
-		// Add the relationship to the table.
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->gform_form_page_table ) ) == $wpdb->gform_form_page_table ) {
+		foreach ( $form_ids as $form_id ) {
 
 			// Check to see if the form/post relation already exists in the table.
-			$form_post_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->gform_form_page_table} WHERE form_id = %d AND post_id = %d", $form_id, $post_id ) );
+			$form_post_count = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM {$wpdb->gform_form_page_table} WHERE form_id = %d AND post_id = %d",
+					$form_id,
+					$post_id
+				)
+			);
 
+			// If the form and post don't already have a relation.
 			if ( $form_post_count < 1 ) {
 
 				$wpdb->insert(
@@ -267,7 +283,6 @@ class Gravity_Form_Locator {
 						'%d',
 					)
 				);
-
 			}
 		}
 	}

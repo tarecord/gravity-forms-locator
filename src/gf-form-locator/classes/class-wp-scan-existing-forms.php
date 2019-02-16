@@ -40,11 +40,11 @@ class WP_Scan_Existing_Forms extends WP_Background_Process {
 
 		$gravity_form_locator = new Gravity_Form_Locator();
 
-		$form_id = $gravity_form_locator->check_for_form( $content, $pattern );
+		$form_ids = $gravity_form_locator->check_for_forms( $content, $pattern );
 
-		if ( $form_id ) {
+		if ( ! empty( $form_ids ) ) {
 
-			$gravity_form_locator->add_form_post_relation( $form_id, $post->ID );
+			$gravity_form_locator->add_form_post_relations( $form_ids, $post->ID );
 
 		}
 

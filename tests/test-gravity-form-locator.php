@@ -22,18 +22,40 @@ class Gravity_Form_LocatorTest extends WP_UnitTestCase {
     }
 
 	/**
-     * @dataProvider data_get_shortcode_id
+     * @dataProvider data_get_shortcode_ids
      */
-	public function test_get_shortcode_id( $shortcode, $expected ) {
-		$result = $this->gravity_form_locator->get_shortcode_id( $shortcode );
+	public function test_get_shortcode_ids( $shortcodes, $expected ) {
+		$result = $this->gravity_form_locator->get_shortcode_ids( $shortcodes );
 		$this->assertEquals( $expected, $result );
 	}
 
-	public function data_get_shortcode_id() {
+	public function data_get_shortcode_ids() {
 		return array(
-			'standard' => [ '[gravityform id="1" title="false" description="false"]', 1 ],
-			'minimal' => [ '[gravityform id="1"]', 1 ],
-			'missing ID' => [ '[gravityform title="false" description="false"]', false ],
+			'standard' => array(
+				array(
+					'[gravityform id="1" title="false" description="false"]'
+				),
+				array(1)
+			),
+			'minimal' => array(
+				array(
+					'[gravityform id="1"]'
+				),
+				array(1)
+			),
+			'multiple' => array(
+				array(
+					'[gravityform id="1" title="false" description="false"]',
+					'[gravityform id="2" title="false" description="false"]'
+				),
+				array(1, 2)
+			),
+			'missing ID' => array(
+				array(
+					'[gravityform title="false" description="false"]'
+				),
+				false
+			),
 		);
 	}
 }
