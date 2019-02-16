@@ -33,15 +33,21 @@ class Gravity_Form_LocatorTest extends WP_UnitTestCase {
 		return array(
 			'standard' => array(
 				array(
-					'[gravityform id="1" title="false" description="false"]'
+					'[gravityform id="10" title="false" description="false"]'
 				),
-				array(1)
+				array(10)
 			),
 			'minimal' => array(
 				array(
 					'[gravityform id="1"]'
 				),
 				array(1)
+			),
+			'huge ID' => array(
+				array(
+					'[gravityform id="1123456789123456789"]'
+				),
+				array(1123456789123456789)
 			),
 			'multiple' => array(
 				array(
