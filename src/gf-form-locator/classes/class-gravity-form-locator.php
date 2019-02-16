@@ -18,30 +18,7 @@ class Gravity_Form_Locator {
 	 */
 	public function __construct() {
 
-		add_action( 'plugins_loaded', array( $this, 'init' ) );
-
-		// Update the table with the page/form id when the post is saved.
-		add_action( 'save_post', array( $this, 'update_form_page_id' ) );
-
-		// Add new menu item to show list of all forms and their post relations.
-		add_filter( 'gform_addon_navigation', array( $this, 'add_location_menu_item' ) );
-
-		// Add location as a view option in the main form view.
-		add_filter( 'gform_toolbar_menu', array( $this, 'add_location_form_edit_menu_option' ), 10, 2 );
-
-		// Add action link to view posts that contain the form.
-		add_filter( 'gform_form_actions', array( $this, 'add_form_post_action' ), 10, 2 );
-
-		add_action( 'init', array( $this, 'process_handler' ) );
-
-		// If the scan is complete, show a notice to the user.
-		if ( get_transient( 'scan_complete' ) ) {
-
-			add_action( 'admin_notices', array( $this, 'scan_complete_notice' ) );
-
-			delete_transient( 'scan_complete' );
-
-		}
+		$this->init();
 
 	}
 
@@ -83,6 +60,29 @@ class Gravity_Form_Locator {
 	 * @return void
 	 */
 	public function init() {
+
+		// Update the table with the page/form id when the post is saved.
+		add_action( 'save_post', array( $this, 'update_form_page_id' ) );
+
+		// Add new menu item to show list of all forms and their post relations.
+		add_filter( 'gform_addon_navigation', array( $this, 'add_location_menu_item' ) );
+
+		// Add location as a view option in the main form view.
+		add_filter( 'gform_toolbar_menu', array( $this, 'add_location_form_edit_menu_option' ), 10, 2 );
+
+		// Add action link to view posts that contain the form.
+		add_filter( 'gform_form_actions', array( $this, 'add_form_post_action' ), 10, 2 );
+
+		add_action( 'init', array( $this, 'process_handler' ) );
+
+		// If the scan is complete, show a notice to the user.
+		if ( get_transient( 'scan_complete' ) ) {
+
+			add_action( 'admin_notices', array( $this, 'scan_complete_notice' ) );
+
+			delete_transient( 'scan_complete' );
+
+		}
 
 		require_once plugin_dir_path( __DIR__ ) . 'vendor/class-wp-async-request.php';
 		require_once plugin_dir_path( __DIR__ ) . 'vendor/class-wp-background-process.php';
