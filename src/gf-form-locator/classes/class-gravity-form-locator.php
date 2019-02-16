@@ -122,15 +122,15 @@ class Gravity_Form_Locator {
 	 * @return void
 	 */
 	public function process_handler() {
-		if ( ! isset( $_GET['process'] ) || ! isset( $_GET['_wpnonce'] ) ) {
+		if ( ! isset( $_POST['process'] ) || ! isset( $_POST['_wpnonce'] ) ) {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( $_GET['_wpnonce'], 'process' ) ) {
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'process' ) ) {
 			return;
 		}
 
-		if ( 'scan_all_pages' === $_GET['process'] ) {
+		if ( 'scan_for_forms' === $_POST['process'] ) {
 			$this->scan();
 		}
 
