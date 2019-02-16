@@ -75,13 +75,17 @@ class Gravity_Form_Locator {
 
 		add_action( 'init', array( $this, 'process_handler' ) );
 
+		// Confirm with the user that the scan has started (if it hasn't already finished).
+		if ( get_transient( 'gfl_scan_running' ) & ! get_transient( 'gfl_scan_complete' ) ) {
+			add_action( 'admin_notices', array( $this, 'scan_running_notice' ) );
+			delete_transient( 'gfl_scan_running' );
+		}
+
 		// If the scan is complete, show a notice to the user.
-		if ( get_transient( 'scan_complete' ) ) {
-
+		if ( get_transient( 'gfl_scan_complete' ) ) {
 			add_action( 'admin_notices', array( $this, 'scan_complete_notice' ) );
-
-			delete_transient( 'scan_complete' );
-
+			delete_transient( 'gfl_scan_running' );
+			delete_transient( 'gfl_scan_complete' );
 		}
 
 		require_once plugin_dir_path( __DIR__ ) . 'vendor/class-wp-async-request.php';
@@ -132,6 +136,8 @@ class Gravity_Form_Locator {
 
 		if ( 'scan_for_forms' === $_POST['process'] ) {
 			$this->scan();
+			set_transient( 'gfl_scan_running', true, HOUR_IN_SECONDS );
+			wp_redirect( admin_url( 'admin.php?page=locations' ) );
 		}
 
 	}
@@ -333,6 +339,19 @@ class Gravity_Form_Locator {
 		?>
 		<div class="notice notice-success is-dismissible">
 		<p><?php echo '<strong>Gravity Form Locator:</strong> Full site scan complete. <a href="' . admin_url( 'admin.php?page=locations' ) . '">View Form Locations</a>'; ?></p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Display a message to the user when form scan has started.
+	 *
+	 * @return void
+	 */
+	public function scan_running_notice() {
+		?>
+		<div class="notice notice-success is-dismissible">
+			<p><?php echo '<strong>Gravity Form Locator:</strong> Full site scan has started. You will see a notice when it has completed.'; ?></p>
 		</div>
 		<?php
 	}
