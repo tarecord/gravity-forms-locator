@@ -198,22 +198,32 @@ class Gravity_Form_Locator {
 	 * @param  string $content The post content to search in.
 	 * @param  string $pattern The regex pattern to match the form shortcode.
 	 *
-	 * @return int            The form_id found in the content.
+	 * @return int|bool The form_id if found in the content or false.
 	 */
 	public function check_for_form( $content, $pattern ) {
 
 		// Check if shortcode exists in the content.
 		if ( preg_match_all( '/' . $pattern . '/s', $content, $matches ) && array_key_exists( 2, $matches ) && in_array( 'gravityform', $matches[2] ) ) {
 
-			// Use the match to extract the form id from the shortcode.
-			if ( preg_match( '~id="(\d)"~', $matches[3][0], $form_id ) ) {
-
-				// If we have the form id, return it as an integer.
-				return (int) $form_id[1];
-			}
+			return $this->get_shortcode_id( $matches[0][0] );
 		}
 
 		return false;
+	}
+
+	/**
+	 * Gets the id from the form shortcode.
+	 *
+	 * @param string $shortcode The shortcode to get the ID from.
+	 */
+	public function get_shortcode_id( $shortcode ) {
+
+		// Use the match to extract the form id from the shortcode.
+		if ( preg_match( '~id="(\d)"~', $shortcode, $form_id ) ) {
+
+			// If we have the form id, return it as an integer.
+			return (int) $form_id[1];
+		}
 	}
 
 	/**
