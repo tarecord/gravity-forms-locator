@@ -7,7 +7,7 @@ Contributors: tarecord
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Simple add-on for Gravity Forms that scans your website in the background and shows a list of each form published with the page or post that it is published on.
+A Gravity Form add-on that shows a list of forms with the page or post they are published on.
 
 == Description ==
 
