@@ -29,7 +29,7 @@ Install Gravity Form Locator via the plugin directory, or upload the files manua
 
 = How does the plugin find the forms? =
 
-The plugin will run a scan of all the pages and posts on your site looking for any [gform] shortcodes. If it finds a shortcode, the form is tracked and added to the "Locations" page in the admin.
+The plugin will run a scan of all the pages and posts on your site looking for any [gravityforms] shortcodes. If it finds a shortcode, the form and post are added to the "Locations" page in the admin.
 
 = Does the plugin search for forms in widgets? =
 
