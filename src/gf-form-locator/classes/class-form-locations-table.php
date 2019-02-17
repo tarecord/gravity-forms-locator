@@ -29,12 +29,9 @@ class Form_Locations_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Retrieve customer’s data from the database
+	 * Retrieve customer’s data from the database.
 	 *
-	 * @param int $per_page     The number of entries to list on a page.
-	 * @param int $page_number  The page number.
-	 *
-	 * @return mixed
+	 * @return array An array of data for the table.
 	 */
 	public function get_locations() {
 
