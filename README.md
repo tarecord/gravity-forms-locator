@@ -1,7 +1,7 @@
 # Gravity Form Locator
 ![](https://travis-ci.org/tarecord/gravity-forms-locator.svg?branch=master)
 
-Simple add-on for Gravity Forms that scans your website in the background and shows a list of each form published with the page or post that it is published on.
+A Gravity Form add-on that shows a list of forms with the page or post they are published on.
 
 ## Description
 

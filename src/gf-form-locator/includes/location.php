@@ -14,8 +14,6 @@
 
 <h1>Form Locations</h1>
 
-<a href="<?php echo wp_nonce_url( admin_url( 'admin.php?page=locations&process=scan_all_pages' ), 'process' ); ?>">Scan All Pages</a>
-
 <?php
 $locations_table = new Form_Locations_Table();
 $locations_table->prepare_items();
@@ -29,5 +27,11 @@ if ( ! empty( $locations_table->items ) ) {
 	<?php
 }
 ?>
+
+<form action="<?php echo admin_url( 'admin.php?page=locations' ); ?>" method="post">
+	<?php wp_nonce_field( 'process' ); ?>
+	<input type="hidden" name="process" value="scan_for_forms">
+	<input type="submit" name="submit" id="submit" class="button button-primary" value="Scan For Forms">
+</form>
 
 </div>

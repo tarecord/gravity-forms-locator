@@ -18,30 +18,7 @@ class Gravity_Form_Locator {
 	 */
 	public function __construct() {
 
-		add_action( 'plugins_loaded', array( $this, 'init' ) );
-
-		// Update the table with the page/form id when the post is saved.
-		add_action( 'save_post', array( $this, 'update_form_page_id' ) );
-
-		// Add new menu item to show list of all forms and their post relations.
-		add_filter( 'gform_addon_navigation', array( $this, 'add_location_menu_item' ) );
-
-		// Add location as a view option in the main form view.
-		add_filter( 'gform_toolbar_menu', array( $this, 'add_location_form_edit_menu_option' ), 10, 2 );
-
-		// Add action link to view posts that contain the form.
-		add_filter( 'gform_form_actions', array( $this, 'add_form_post_action' ), 10, 2 );
-
-		add_action( 'init', array( $this, 'process_handler' ) );
-
-		// If the scan is complete, show a notice to the user.
-		if ( get_transient( 'scan_complete' ) ) {
-
-			add_action( 'admin_notices', array( $this, 'scan_complete_notice' ) );
-
-			delete_transient( 'scan_complete' );
-
-		}
+		$this->init();
 
 	}
 
@@ -84,6 +61,33 @@ class Gravity_Form_Locator {
 	 */
 	public function init() {
 
+		// Update the table with the page/form id when the post is saved.
+		add_action( 'save_post', array( $this, 'update_form_page_id' ), 10, 3 );
+
+		// Add new menu item to show list of all forms and their post relations.
+		add_filter( 'gform_addon_navigation', array( $this, 'add_location_menu_item' ) );
+
+		// Add location as a view option in the main form view.
+		add_filter( 'gform_toolbar_menu', array( $this, 'add_location_form_edit_menu_option' ), 10, 2 );
+
+		// Add action link to view posts that contain the form.
+		add_filter( 'gform_form_actions', array( $this, 'add_form_post_action' ), 10, 2 );
+
+		add_action( 'init', array( $this, 'process_handler' ) );
+
+		// Confirm with the user that the scan has started (if it hasn't already finished).
+		if ( get_transient( 'gfl_scan_running' ) & ! get_transient( 'gfl_scan_complete' ) ) {
+			add_action( 'admin_notices', array( $this, 'scan_running_notice' ) );
+			delete_transient( 'gfl_scan_running' );
+		}
+
+		// If the scan is complete, show a notice to the user.
+		if ( get_transient( 'gfl_scan_complete' ) ) {
+			add_action( 'admin_notices', array( $this, 'scan_complete_notice' ) );
+			delete_transient( 'gfl_scan_running' );
+			delete_transient( 'gfl_scan_complete' );
+		}
+
 		require_once plugin_dir_path( __DIR__ ) . 'vendor/class-wp-async-request.php';
 		require_once plugin_dir_path( __DIR__ ) . 'vendor/class-wp-background-process.php';
 		require_once plugin_dir_path( __FILE__ ) . 'class-wp-scan-existing-forms.php';
@@ -102,7 +106,6 @@ class Gravity_Form_Locator {
 		$args = array(
 			'posts_per_page' => -1,
 			'post_type'      => array( 'post', 'page' ),
-			// get all types of posts except revisions and posts in the trash.
 			'status'         => array( 'publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'trash' ),
 		);
 
@@ -122,16 +125,18 @@ class Gravity_Form_Locator {
 	 * @return void
 	 */
 	public function process_handler() {
-		if ( ! isset( $_GET['process'] ) || ! isset( $_GET['_wpnonce'] ) ) {
+		if ( ! isset( $_POST['process'] ) || ! isset( $_POST['_wpnonce'] ) ) {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( $_GET['_wpnonce'], 'process' ) ) {
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'process' ) ) {
 			return;
 		}
 
-		if ( 'scan_all_pages' === $_GET['process'] ) {
+		if ( 'scan_for_forms' === $_POST['process'] ) {
 			$this->scan();
+			set_transient( 'gfl_scan_running', true, HOUR_IN_SECONDS );
+			wp_redirect( admin_url( 'admin.php?page=locations' ) );
 		}
 
 	}
@@ -160,30 +165,39 @@ class Gravity_Form_Locator {
 	/**
 	 * Save page/form relation in the database on save
 	 *
-	 * @param int $post_id the post id returned from the save_post action.
+	 * @param int    $post_id The post id returned from the save_post action.
+	 * @param object $post    The post object.
+	 * @param bool   $update  Whether the save is updating an existing post or not.
 	 *
 	 * @return  void
 	 */
-	public function update_form_page_id( $post_id ) {
+	public function update_form_page_id( $post_id, $post, $update ) {
 
-		// If this is a revision just return.
+		// If this is a revision don't do anything.
 		if ( wp_is_post_revision( $post_id ) ) {
-
 			return;
-
 		}
 
-		global $wpdb;
+		// Grab the content from the post.
+		$content  = stripslashes( $post->post_content );
+		$pattern  = get_shortcode_regex();
+		$form_ids = $this->check_for_forms( $content, $pattern );
 
-		// Grab the content from the form post.
-		$content = stripslashes( $_POST['content'] );
+		// If this is an existing post being updated.
+		if ( $update ) {
 
-		$pattern = get_shortcode_regex();
+			// Remove form references and rescan post.
+			global $wpdb;
+			$wpdb->delete( $wpdb->prefix . 'gform_form_page', array( 'post_id' => $post_id ) );
+			$this->add_form_post_relations( $form_ids, $post_id );
 
-		$form_id = $this->check_for_form( $content, $pattern );
+		} else {
 
-		$this->add_form_post_relation( $form_id, $post_id );
-
+			// Does the post have any forms?
+			if ( $form_id ) {
+				$this->add_form_post_relations( $form_ids, $post_id );
+			}
+		}
 	}
 
 	/**
@@ -192,43 +206,69 @@ class Gravity_Form_Locator {
 	 * @param  string $content The post content to search in.
 	 * @param  string $pattern The regex pattern to match the form shortcode.
 	 *
-	 * @return int            The form_id found in the content.
+	 * @return array The form shortcodes
 	 */
-	public function check_for_form( $content, $pattern ) {
+	public function check_for_forms( $content, $pattern ) {
 
 		// Check if shortcode exists in the content.
 		if ( preg_match_all( '/' . $pattern . '/s', $content, $matches ) && array_key_exists( 2, $matches ) && in_array( 'gravityform', $matches[2] ) ) {
-
-			// Use the match to extract the form id from the shortcode.
-			preg_match( '~id="(.*)\"~', $matches[3][0], $form_id );
-
-			// Convert the form id to an int.
-			$form_id = (int) $form_id[1];
-
-			return $form_id;
+			return $this->get_shortcode_ids( $matches[0] );
 		}
 
+		return false;
 	}
 
 	/**
-	 * Adds the form_id and post_id to the table
+	 * Gets the ids from the form shortcodes.
 	 *
-	 * @param int|string $form_id  The id of the form.
-	 * @param int|string $post_id  The id of the post.
+	 * @param string $shortcodes The shortcodes to get the IDs from.
 	 */
-	public function add_form_post_relation( $form_id, $post_id ) {
+	public function get_shortcode_ids( $shortcodes = array() ) {
+
+		$form_ids = array();
+
+		foreach ( $shortcodes as $shortcode ) {
+			// Use the match to extract the form id from the shortcode.
+			if ( preg_match( '~id=[\"\']?([^\"\'\s]+)[\"\']?~i', $shortcode, $form_id ) ) {
+
+				// If we have the form id, add it to the array.
+				array_push( $form_ids, intval( $form_id[1] ) );
+			}
+		}
+
+		if ( ! empty( $form_ids ) ) {
+			return $form_ids;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Creates a relationship between form_ids and a post.
+	 *
+	 * @param array $form_ids The ids of the forms.
+	 * @param int   $post_id  The id of the post.
+	 */
+	public function add_form_post_relations( $form_ids = array(), $post_id ) {
 
 		global $wpdb;
 
 		// Define the table Name.
 		$wpdb->gform_form_page_table = $wpdb->prefix . 'gform_form_page';
 
-		// Add the relationship to the table.
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->gform_form_page_table ) ) == $wpdb->gform_form_page_table ) {
+		foreach ( $form_ids as $form_id ) {
 
 			// Check to see if the form/post relation already exists in the table.
-			$form_post_count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->gform_form_page_table} WHERE form_id = %d AND post_id = %d", $form_id, $post_id ) );
+			$form_post_count = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM {$wpdb->gform_form_page_table} WHERE form_id = %d AND post_id = %d",
+					$form_id,
+					$post_id
+				)
+			);
 
+			// If the form and post don't already have a relation.
 			if ( $form_post_count < 1 ) {
 
 				$wpdb->insert(
@@ -242,7 +282,6 @@ class Gravity_Form_Locator {
 						'%d',
 					)
 				);
-
 			}
 		}
 	}
@@ -332,7 +371,20 @@ class Gravity_Form_Locator {
 	public function scan_complete_notice() {
 		?>
 		<div class="notice notice-success is-dismissible">
-		<p><?php echo '<strong>Gravity Forms - Page Tracker Addon:</strong> Full site scan complete. <a href="' . admin_url( 'admin.php?page=locations' ) . '">View Form Locations</a>', 'gravity-forms-page-tracker-addon'; ?></p>
+		<p><?php echo '<strong>Gravity Form Locator:</strong> Full site scan complete. <a href="' . admin_url( 'admin.php?page=locations' ) . '">View Form Locations</a>'; ?></p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Display a message to the user when form scan has started.
+	 *
+	 * @return void
+	 */
+	public function scan_running_notice() {
+		?>
+		<div class="notice notice-success is-dismissible">
+			<p><?php echo '<strong>Gravity Form Locator:</strong> Full site scan has started. You will see a notice when it has completed.'; ?></p>
 		</div>
 		<?php
 	}

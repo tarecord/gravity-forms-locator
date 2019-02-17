@@ -1,13 +1,13 @@
 === Gravity Form Locator ===
 Requires at least: 4.8 or Later
-Tested up to: 4.9.8
-Stable tag: 1.0.2
+Tested up to: 5.0.3
+Stable tag: 1.2.0
 Requires PHP: 5.6
 Contributors: tarecord
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Simple add-on for Gravity Forms that scans your website in the background and shows a list of each form published with the page or post that it is published on.
+A Gravity Form add-on that shows a list of forms with the page or post they are published on.
 
 == Description ==
 
@@ -29,7 +29,7 @@ Install Gravity Form Locator via the plugin directory, or upload the files manua
 
 = How does the plugin find the forms? =
 
-The plugin will run a scan of all the pages and posts on your site looking for any [gform] shortcodes. If it finds a shortcode, the form is tracked and added to the "Locations" page in the admin.
+The plugin will run a scan of all the pages and posts on your site looking for any [gravityforms] shortcodes. If it finds a shortcode, the form and post are added to the "Locations" page in the admin.
 
 = Does the plugin search for forms in widgets? =
 
@@ -46,6 +46,13 @@ Help me improve this plugin on GitHub by submitting a pull request or adding an 
 3. Another new quick link to view all the pages/posts the current form is published on.
 
 == Changelog ==
+
+= 1.2.0 =
+* Fixed a bug that caused some forms to be missed when scanning.
+* Fixed bugs related to duplicated form locations when editing posts.
+* Added support for multiple forms on the same post.
+* Added sortable columns to the location table.
+* Added pagination to the location table.
 
 = 1.0.2 =
 * Fix bug causing plugin to crash on PHP 7
