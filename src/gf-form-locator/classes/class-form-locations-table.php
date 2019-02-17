@@ -36,7 +36,7 @@ class Form_Locations_Table extends WP_List_Table {
 	 *
 	 * @return mixed
 	 */
-	public static function get_locations( $per_page = 10, $page_number = 1 ) {
+	public function get_locations() {
 
 		global $wpdb;
 
@@ -54,14 +54,6 @@ class Form_Locations_Table extends WP_List_Table {
 
 			$sql .= ' ORDER BY ' . esc_sql( $orderby );
 			$sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $order ) : ' ASC';
-		}
-
-		if ( isset( $per_page ) ) {
-
-			$sql .= " LIMIT $per_page";
-
-			$sql .= ' OFFSET ' . ( $page_number - 1 ) * $per_page;
-
 		}
 
 		$result = $wpdb->get_results( $sql, 'ARRAY_A' ); //phpcs:ignore
@@ -178,9 +170,21 @@ class Form_Locations_Table extends WP_List_Table {
 	 */
 	function prepare_items() {
 		$columns               = $this->get_columns();
+		$sortable              = $this->get_sortable_columns();
 		$hidden                = array();
-		$this->_column_headers = array( $columns, $hidden );
-		$this->items           = self::get_locations();
+		$this->_column_headers = array( $columns, $hidden, $sortable );
+
+		$per_page     = 25;
+		$current_page = $this->get_pagenum();
+		$data         = $this->get_locations( $per_page, $current_page );
+		$total_items  = count( $data );
+
+		$this->set_pagination_args( array(
+			'total_items' => $total_items,
+			'per_page'    => $per_page,
+		) );
+
+		$this->items = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
 	}
 
 }
