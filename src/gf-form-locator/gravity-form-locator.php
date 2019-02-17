@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Gravity Form Locator
  * Plugin URI: https://github.com/tarecord/gravity-forms-locator/
- * Description: Simple add-on for Gravity Forms that scans your website in the background and shows a list of each form published with the page or post that it is published on.
- * Version: 1.0.2
+ * Description: A Gravity Form add-on that shows a list of forms with the page or post they are published on.
+ * Version: 1.2.0
  * Author: Tanner Record
  * Author URI: http://www.tannerrecord.com
  * License: GPL2
