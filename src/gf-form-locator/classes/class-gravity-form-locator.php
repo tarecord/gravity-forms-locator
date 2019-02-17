@@ -106,7 +106,6 @@ class Gravity_Form_Locator {
 		$args = array(
 			'posts_per_page' => -1,
 			'post_type'      => array( 'post', 'page' ),
-			// get all types of posts except revisions and posts in the trash.
 			'status'         => array( 'publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'trash' ),
 		);
 
