@@ -58,6 +58,7 @@ foreach ( $version_checks as $file => $regexes ) {
 	}
 }
 echo 'done' . PHP_EOL;
+
 echo 'Preparing build directory...';
 echo `rm -rf $tmp_dir`;
 if ( ! is_dir( $tmp_dir ) ) {
@@ -70,16 +71,18 @@ echo `rsync -r --filter=". $filter_file" "$src_dir"/* "$dest_dir"`;
 chdir( $tmp_dir );
 // Deploy the plugin to WordPress.org
 echo "done" . PHP_EOL;
-echo "Pulling down SVN Repository...";
-echo `svn co https://plugins.svn.wordpress.org/$PLUGIN_SLUG svn`;
-echo "done" . PHP_EOL;
-echo `rsync -r $PLUGIN_SLUG/ svn/trunk`;
+echo "Pulling down SVN Repository..." . PHP_EOL;
+echo `svn co https://plugins.svn.wordpress.org/$PLUGIN_SLUG svn --depth=immediates`;
+chdir( $tmp_dir . '/svn/trunk' );
+echo `svn update --set-depth infinity`; // Pull all current trunk files so we can track modifications.
+chdir( $tmp_dir );
+echo `rsync -r --delete $PLUGIN_SLUG/ svn/trunk`;
 echo `rsync -r $PLUGIN_SLUG/ svn/tags/$version`;
 echo `svn stat svn/ | grep '^\?' | awk '{print $2}' | xargs -I x svn add x@`;
 echo `svn stat svn/ | grep '^\!' | awk '{print $2}' | xargs -I x svn rm --force x@`;
 echo `svn stat svn/`;
 echo "Committing repository to WordPress..." . PHP_EOL;
-echo `cd svn`;
+chdir( $tmp_dir . '/svn' );
 echo `svn ci --no-auth-cache --username $WP_ORG_USERNAME --password $WP_ORG_PASSWORD -m "Deploy version $version"`;
 if ( $cleanup ) {
 	echo `rm -Rf "$dest_dir"`;

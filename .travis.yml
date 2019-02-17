@@ -62,9 +62,7 @@ script:
     fi
 
 before_deploy:
-  - cd src/gf-form-locator
-  - zip -r ../../gf-form-locator.zip .
-  - cd ../../
+  - zip -r gf-form-locator.zip src/gf-form-locator
 
 deploy:
   # Upload .zip to Github release
