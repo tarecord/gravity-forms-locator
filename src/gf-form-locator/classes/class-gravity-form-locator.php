@@ -230,7 +230,7 @@ class Gravity_Form_Locator {
 
 		foreach ( $shortcodes as $shortcode ) {
 			// Use the match to extract the form id from the shortcode.
-			if ( preg_match( '~id="(\d*)"~', $shortcode, $form_id ) ) {
+			if ( preg_match( '~id=[\"\']?([^\"\'\s]+)[\"\']?~i', $shortcode, $form_id ) ) {
 
 				// If we have the form id, add it to the array.
 				array_push( $form_ids, intval( $form_id[1] ) );
