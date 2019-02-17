@@ -1,7 +1,7 @@
 === Gravity Form Locator ===
 Requires at least: 4.8 or Later
-Tested up to: 4.9.8
-Stable tag: 1.0.2
+Tested up to: 5.0.3
+Stable tag: 1.2.0
 Requires PHP: 5.6
 Contributors: tarecord
 License: GPLv2 or later
