@@ -69,6 +69,11 @@ class Form_Locations_Table extends WP_List_Table {
 
 		$form = GFAPI::get_form( $item['form_id'] );
 
+		// Form does not exist.
+		if ( ! $form ) {
+			return '<span style="color:red">Invalid Form ID Used</span>';
+		}
+
 		return '<a href="?page=gf_edit_forms&id=' . $form['id'] . '">' . $form['title'] . '</a>';
 	}
 
