@@ -1,5 +1,7 @@
 # Changelog #
 
+### 1.3.0 ###
+
 ### 1.2.0 ###
 * Fixed a bug that caused some forms to be missed when scanning.
 * Fixed bugs related to duplicated form locations when editing posts.
