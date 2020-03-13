@@ -45,20 +45,20 @@ function dependency_check() {
 	// If Parent Plugin is NOT active.
 	if ( current_user_can( 'activate_plugins' ) && ! class_exists( 'GFForms' ) ) {
 
-		add_action( 'admin_init', 'my_plugin_deactivate' );
-		add_action( 'admin_notices', 'my_plugin_admin_notice' );
+		add_action( 'admin_init', 'gffl_deactivate' );
+		add_action( 'admin_notices', 'gffl_admin_notice' );
 
 		/**
 		 * Deactivate the plugin.
 		 */
-		function my_plugin_deactivate() {
+		function gffl_deactivate() {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
 		}
 
 		/**
 		 * Throw an Alert to tell the Admin why it didn't activate.
 		 */
-		function my_plugin_admin_notice() {
+		function gffl_admin_notice() {
 			$gffl_child_plugin  = __( 'Gravity Form Locator', 'gravity-form-locator' );
 			$gffl_parent_plugin = __( 'Gravity Forms', 'gravity-form-locator' );
 
