@@ -39,6 +39,8 @@ add_action( 'plugins_loaded', 'dependency_check' );
 
 /**
  * Checks to see if Gravity Forms is installed, activated and the correct version.
+ *
+ * @since 1.3.0
  */
 function dependency_check() {
 
