@@ -180,7 +180,7 @@ class Gravity_Form_Locator {
 
 		// Grab the content from the post.
 		$content  = stripslashes( $post->post_content );
-		$pattern  = get_shortcode_regex();
+		$pattern  = get_shortcode_regex( array( 'gravityform' ) );
 		$form_ids = $this->check_for_forms( $content, $pattern );
 
 		// If this is an existing post being updated.
