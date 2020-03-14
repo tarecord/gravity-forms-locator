@@ -210,8 +210,11 @@ class Gravity_Form_Locator {
 	 */
 	public function check_for_forms( $content, $pattern ) {
 
+		preg_match_all( '/' . $pattern . '/s', $content, $matches );
+		array_key_exists( 2, $matches );
+
 		// Check if shortcode exists in the content.
-		if ( preg_match_all( '/' . $pattern . '/s', $content, $matches ) && array_key_exists( 2, $matches ) && in_array( 'gravityform', $matches[2] ) ) {
+		if ( in_array( 'gravityform', $matches[2] ) ) {
 			return $this->get_shortcode_ids( $matches[0] );
 		}
 
