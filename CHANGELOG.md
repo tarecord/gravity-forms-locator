@@ -1,6 +1,8 @@
 # Changelog #
 
 ### 1.3.0 ###
+* Fixed bugs related to scanning and finding forms
+* Added support for gutenberg forms.
 
 ### 1.2.0 ###
 * Fixed a bug that caused some forms to be missed when scanning.
