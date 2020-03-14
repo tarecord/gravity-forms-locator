@@ -194,7 +194,7 @@ class Gravity_Form_Locator {
 		} else {
 
 			// Does the post have any forms?
-			if ( $form_id ) {
+			if ( $form_ids ) {
 				$this->add_form_post_relations( $form_ids, $post_id );
 			}
 		}
