@@ -272,7 +272,7 @@ class Gravity_Form_Locator {
 			);
 
 			// If the form and post don't already have a relation.
-			if ( $form_post_count < 1 ) {
+			if ( intval( $form_post_count ) < 1 ) {
 
 				$wpdb->insert(
 					$wpdb->gform_form_page_table,
