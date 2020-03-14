@@ -36,7 +36,7 @@ class WP_Scan_Existing_Forms extends WP_Background_Process {
 		// Grab the content from the form post.
 		$content = stripslashes( $post->post_content );
 
-		$pattern = get_shortcode_regex();
+		$pattern = get_shortcode_regex( array( 'gravityform' ) );
 
 		$gravity_form_locator = new Gravity_Form_Locator();
 
