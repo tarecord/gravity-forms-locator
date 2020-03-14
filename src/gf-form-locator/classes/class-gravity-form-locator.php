@@ -106,14 +106,12 @@ class Gravity_Form_Locator {
 	public function scan() {
 
 		$args = array(
-			'posts_per_page' => -1,
-			'post_type'      => array( 'post', 'page' ),
-			'status'         => array( 'publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'trash' ),
+			'post_type' => array( 'page', 'post' ),
 		);
 
-		$posts = get_posts( $args );
+		$post_query = new WP_Query( $args );
 
-		foreach ( $posts as $post ) {
+		foreach ( $post_query->posts as $post ) {
 			$this->scan_site_process->push_to_queue( $post );
 		}
 
