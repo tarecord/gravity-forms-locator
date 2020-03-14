@@ -74,15 +74,14 @@ function dependency_check() {
 				unset( $_GET['activate'] );
 			}
 		}
-	} else {
-
-		// Start up the plugin.
-		require_once 'classes/class-gravity-form-locator.php';
-
-		// Handle activation and uninstalling.
-		register_activation_hook( __FILE__, array( 'Gravity_Form_Locator', 'activate' ) );
-		register_uninstall_hook( __FILE__, array( 'Gravity_Form_Locator', 'uninstall' ) );
-
-		new Gravity_Form_Locator();
 	}
 }
+
+// Start up the plugin.
+require_once 'classes/class-gravity-form-locator.php';
+
+new Gravity_Form_Locator();
+
+// Handle activation and uninstalling.
+register_activation_hook( __FILE__, array( 'Gravity_Form_Locator', 'activate' ) );
+register_uninstall_hook( __FILE__, array( 'Gravity_Form_Locator', 'uninstall' ) );
