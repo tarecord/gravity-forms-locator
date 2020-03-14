@@ -36,8 +36,10 @@ class Gravity_Form_Locator {
 
 		$charset_collate = $wpdb->get_charset_collate();
 
+		$table_exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $gform_form_page_table ) );
+
 		// Check if table exists before trying to create it.
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $gform_form_page_table ) ) != $gform_form_page_table ) {
+		if ( null === $table_exists ) {
 
 			// Create the table.
 			$sql = "CREATE TABLE $gform_form_page_table (
