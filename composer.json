@@ -1,0 +1,16 @@
+{
+    "name": "tarecord/gravity-forms-locator",
+    "type": "project",
+    "require": {
+    },
+    "license": "GPL2",
+    "authors": [
+        {
+            "name": "Tanner Record",
+            "email": "tanner.record@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^7"
+    }
+}
