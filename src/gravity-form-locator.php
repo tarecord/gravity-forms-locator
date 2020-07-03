@@ -61,7 +61,7 @@ function dependency_check() {
 		 * Throw an Alert to tell the Admin why it didn't activate.
 		 */
 		function gffl_admin_notice() {
-			$gffl_child_plugin  = __( 'Gravity Form Locator', 'gravity-form-locator' );
+			$gffl_child_plugin  = __( 'Gravity Forms Locator', 'gravity-form-locator' );
 			$gffl_parent_plugin = __( 'Gravity Forms', 'gravity-form-locator' );
 
 			echo sprintf(
