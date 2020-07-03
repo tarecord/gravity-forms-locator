@@ -4,41 +4,79 @@ language: php
 
 notifications:
   email:
-    on_success: never
-    on_failure: change
+    recipients:
+    - tanner.record@gmail.com
 
 branches:
   only:
     - master
-    - develop
-
-php:
-  - 5.3
-  - 5.6
+    - /^v.*$/
 
 env:
-  - WP_VERSION=latest WP_MULTISITE=0
-  - WP_VERSION=3.0 or Later WP_MULTISITE=0
-  - WP_VERSION=4.8.0 WP_MULTISITE=0
+  global:
+    - PATH="$TRAVIS_BUILD_DIR/vendor/bin:$PATH"
+    - WP_CLI_BIN_DIR="$TRAVIS_BUILD_DIR/vendor/bin"
 
 matrix:
   include:
-    - php: 5.3
-      env: WP_VERSION=latest WP_MULTISITE=1
+    - php: 7.2
+      env: WP_VERSION=latest
+    - php: 7.1
+      env: WP_VERSION=latest
+    - php: 7.0
+      env: WP_VERSION=latest
+    - php: 5.6
+      env: WP_VERSION=latest
+    - php: 5.6
+      env: WP_VERSION=4.8
+    - php: 5.6
+      env: WP_VERSION=trunk
+    - php: 5.6
+      env: WP_TRAVISCI=phpcs
+  allow_failures:
+    - php: 5.6
+      env: WP_TRAVISCI=phpcs
 
 before_script:
-  - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
-  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - export PATH="$HOME/.config/composer/vendor/bin:$PATH"
   - |
-    if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then
-      composer global require "phpunit/phpunit=5.7.*"
-    else
-      composer global require "phpunit/phpunit=4.8.*"
+    if [[ ! -z "$WP_VERSION" ]] ; then
+      bash bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1 $WP_VERSION
+      composer global require "phpunit/phpunit=4.8.*|5.7.*"
     fi
   - |
-    composer global require wp-coding-standards/wpcs
-    phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
+    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
+      composer global require wp-coding-standards/wpcs
+      phpcs --config-set installed_paths $HOME/.config/composer/vendor/wp-coding-standards/wpcs
+    fi
 
 script:
-  - phpcs --standard=phpcs.ruleset.xml $(find src -name '*.php')
-  - phpunit
+  - |
+    if [[ ! -z "$WP_VERSION" ]] ; then
+      phpunit
+      WP_MULTISITE=1 phpunit
+    fi
+  - |
+    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
+      phpcs
+    fi
+
+before_deploy:
+  - zip -r gf-form-locator.zip src/gf-form-locator
+
+deploy:
+  # Upload .zip to Github release
+  - provider: releases
+    api_key: "$GITHUB_OAUTH_TOKEN"
+    file: "gf-form-locator.zip"
+    skip_cleanup: true
+    on:
+      tags: true
+      php: 7.2
+  # Deploy to WordPress Repository
+  - provider: script
+    script:
+      - php build/plugin-build $WP_ORG_PASSWORD $WP_ORG_USERNAME gf-form-locator
+    on:
+      tags: true
+      php: 7.2
