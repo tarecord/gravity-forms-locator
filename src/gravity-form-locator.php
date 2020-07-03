@@ -65,9 +65,10 @@ function dependency_check() {
 			$gffl_parent_plugin = __( 'Gravity Forms', 'gravity-form-locator' );
 
 			echo sprintf(
-				'<div class="error"><p>%1$s requires %2$s to function correctly. Please activate %2$s before activating %1$s. For now, the plugin has been deactivated.</p></div>',
-				'<strong>' . esc_html( $gffl_child_plugin ) . '</strong>',
-				'<strong>' . esc_html( $gffl_parent_plugin ) . '</strong>'
+				/* translators: 1. Gravity Forms 2: Gravity Forms Locator */
+				__( '<div class="error"><p>Please activate <strong>%2$s</strong> before activating <strong>%1$s</strong>. For now, the plugin has been deactivated.</p></div>', 'gravity-form-locator' ),
+				$gffl_child_plugin,
+				$gffl_parent_plugin
 			);
 
 			if ( isset( $_GET['activate'] ) ) {
