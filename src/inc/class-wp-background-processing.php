@@ -4,6 +4,7 @@
  *
  * @package WP-Background-Processing
  */
+
 if ( ! class_exists( 'WP_Background_Process' ) ) {
 	/**
 	 * Abstract WP_Background_Process class.
@@ -58,7 +59,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 * Dispatch
 		 *
 		 * @access public
-		 * @return void
+		 * @return parent::dispatch
 		 */
 		public function dispatch() {
 			// Schedule the cron healthcheck.
@@ -136,7 +137,7 @@ if ( ! class_exists( 'WP_Background_Process' ) ) {
 		 * the process is not already running.
 		 */
 		public function maybe_handle() {
-			// Don't lock up other requests while processing
+			// Don't lock up other requests while processing.
 			session_write_close();
 			if ( $this->is_process_running() ) {
 				// Background process already running.
