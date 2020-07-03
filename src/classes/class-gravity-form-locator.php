@@ -154,7 +154,7 @@ class Gravity_Form_Locator {
 		$gform_form_page_table = $wpdb->prefix . 'gform_form_page';
 
 		// Check if table exists before trying to delete it.
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $gform_form_page_table ) ) == $gform_form_page_table ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $gform_form_page_table ) ) === $gform_form_page_table ) {
 
 			$wpdb->query( $wpdb->prepare( 'DROP TABLE %s;', $gform_form_page_table ) );
 
@@ -215,7 +215,7 @@ class Gravity_Form_Locator {
 		if ( has_block( 'gravityforms/form', $content ) ) {
 			$blocks = parse_blocks( $content );
 
-			foreach( $blocks as $block ) {
+			foreach ( $blocks as $block ) {
 				if ( 'gravityforms/form' === $block['blockName'] ) {
 					array_push( $form_ids, intval( $block['attrs']['formId'] ) );
 				}
@@ -226,7 +226,7 @@ class Gravity_Form_Locator {
 		array_key_exists( 2, $matches );
 
 		// Check if shortcode exists in the content.
-		if ( in_array( 'gravityform', $matches[2] ) ) {
+		if ( in_array( 'gravityform', $matches[2], true ) ) {
 			$forms = $this->get_shortcode_ids( $matches[0] );
 			if ( is_array( $forms ) ) {
 				$form_ids = array_merge( $form_ids, $forms );
