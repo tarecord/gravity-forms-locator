@@ -4,11 +4,12 @@
  *
  * @package Gravity_Form_Locator
  */
+use PHPUnit\Framework\TestCase;
 
 /**
  * Responsible for testing Gravity_Form_Locator.
  */
-class Gravity_Form_LocatorTest extends WP_UnitTestCase {
+class Gravity_Form_LocatorTest extends TestCase {
 
 	/**
 	 * The instantiated class.
