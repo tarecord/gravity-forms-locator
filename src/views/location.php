@@ -8,6 +8,10 @@
  * @since      File available since Release 1.0.0
  */
 
+namespace GravityFormLocator\Views;
+
+use GravityFormLocator\FormLocationsTable;
+
 ?>
 
 <div class="wrap">
@@ -15,7 +19,7 @@
 <h1>Form Locations</h1>
 
 <?php
-$locations_table = new Form_Locations_Table();
+$locations_table = new FormLocationsTable();
 $locations_table->prepare_items();
 if ( ! empty( $locations_table->items ) ) {
 

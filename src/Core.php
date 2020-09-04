@@ -365,16 +365,13 @@ class Core {
 	}
 
 	/**
-	 * Add the location view
-	 *
-	 * @param string $view  The view to use the table in.
-	 * @param int    $id    The id of the menu item.
+	 * Add the location view.
 	 *
 	 * @return void
 	 */
-	public function add_location_view( $view = null, $id = 0 ) {
+	public function add_location_view() {
 
-		require_once( plugin_dir_path( __DIR__ ) . 'includes/location.php' );
+		include_once dirname( __FILE__ ) . '/views/location.php';
 
 	}
 
