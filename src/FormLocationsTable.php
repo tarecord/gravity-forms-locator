@@ -10,6 +10,7 @@
 
 namespace TAR\GravityFormLocator;
 
+use GFAPI;
 use WP_List_Table;
 
 /**
@@ -71,7 +72,8 @@ class FormLocationsTable extends WP_List_Table {
 	 */
 	function column_form_id( $item ) {
 
-		$form = \GFAPI::get_form( $item['form_id'] );
+		$gf_api = new GFAPI();
+		$form   = $gf_api::get_form( $item['form_id'] );
 
 		// Form does not exist.
 		if ( ! $form ) {
