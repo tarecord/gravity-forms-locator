@@ -27,10 +27,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-include dirname( __FILE__ ) . '/vendor/autoload.php';
-
-define( 'PLUGIN_FILE', __FILE__ );
-define( 'PLUGIN_DIR', dirname( PLUGIN_FILE ) );
+/**
+ * Include the autoloader.
+ */
+require_once dirname( __FILE__ ) . '/vendor/autoload.php';
 
 /**
  * Since this plugin depends on Gravity Forms, we need to check if
@@ -40,49 +40,52 @@ define( 'PLUGIN_DIR', dirname( PLUGIN_FILE ) );
  * could not be activated.
  */
 
-add_action( 'plugins_loaded', 'dependency_check' );
+add_action( 'plugins_loaded', 'gfl_dependency_check' );
 
 /**
  * Checks to see if Gravity Forms is installed, activated and the correct version.
  *
  * @since 1.3.0
  */
-function dependency_check() {
+function gfl_dependency_check() {
 
 	// If Parent Plugin is NOT active.
 	if ( current_user_can( 'activate_plugins' ) && ! class_exists( 'GFForms' ) ) {
 
-		add_action( 'admin_init', 'gffl_deactivate' );
-		add_action( 'admin_notices', 'gffl_admin_notice' );
+		add_action( 'admin_init', 'gfl_deactivate' );
+		add_action( 'admin_notices', 'gfl_admin_notice' );
 
 		/**
 		 * Deactivate the plugin.
 		 */
-		function gffl_deactivate() {
+		function gfl_deactivate() {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
 		}
 
 		/**
 		 * Throw an Alert to tell the Admin why it didn't activate.
 		 */
-		function gffl_admin_notice() {
-			$gffl_child_plugin  = __( 'Gravity Forms Locator', 'gravity-form-locator' );
-			$gffl_parent_plugin = __( 'Gravity Forms', 'gravity-form-locator' );
+		function gfl_admin_notice() {
+			$gfl_child_plugin  = __( 'Gravity Forms Locator', 'gravity-form-locator' );
+			$gfl_parent_plugin = __( 'Gravity Forms', 'gravity-form-locator' );
 
 			echo sprintf(
-				/* translators: 1. Gravity Forms 2: Gravity Forms Locator */
-				__( '<div class="error"><p>Please activate <strong>%2$s</strong> before activating <strong>%1$s</strong>. For now, the plugin has been deactivated.</p></div>', 'gravity-form-locator' ),
-				$gffl_child_plugin,
-				$gffl_parent_plugin
+				'<div class="error"><p>Please activate <strong>%2$s</strong> before activating <strong>%1$s</strong>. For now, the plugin has been deactivated.</p></div>',
+				esc_html( $gfl_child_plugin ),
+				esc_html( $gfl_parent_plugin )
 			);
 
+			// phpcs:disable
 			if ( isset( $_GET['activate'] ) ) {
 				unset( $_GET['activate'] );
 			}
+			// phpcs:enable
 		}
 	}
 }
 
+$gfl_plugin = new GravityFormLocator\Core();
+
 // Handle activation and uninstalling.
-register_activation_hook( __FILE__, array( new GravityFormLocator\Core, 'activate' ) );
-register_uninstall_hook( __FILE__, array( new GravityFormLocator\Core, 'uninstall' ) );
+register_activation_hook( __FILE__, array( $gfl_plugin, 'activate' ) );
+register_uninstall_hook( __FILE__, array( $gfl_plugin, 'uninstall' ) );
