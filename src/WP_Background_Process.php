@@ -235,7 +235,7 @@ abstract class WP_Background_Process extends WP_Async_Request {
 		ORDER BY {$key_column} ASC
 		LIMIT 1
 	", $key ) );
-		$batch       = new stdClass();
+		$batch       = new \stdClass();
 		$batch->key  = $query->$column;
 		$batch->data = maybe_unserialize( $query->$value_column );
 		return $batch;
