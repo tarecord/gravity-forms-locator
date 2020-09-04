@@ -27,6 +27,11 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+include dirname( __FILE__ ) . '/vendor/autoload.php';
+
+define( 'PLUGIN_FILE', __FILE__ );
+define( 'PLUGIN_DIR', dirname( PLUGIN_FILE ) );
+
 /**
  * Since this plugin depends on Gravity Forms, we need to check if
  * Gravity Forms is currently active.
@@ -78,11 +83,6 @@ function dependency_check() {
 	}
 }
 
-// Start up the plugin.
-require_once 'classes/class-gravity-form-locator.php';
-
-new Gravity_Form_Locator();
-
 // Handle activation and uninstalling.
-register_activation_hook( __FILE__, array( 'Gravity_Form_Locator', 'activate' ) );
-register_uninstall_hook( __FILE__, array( 'Gravity_Form_Locator', 'uninstall' ) );
+register_activation_hook( __FILE__, array( new GravityFormLocator\Core, 'activate' ) );
+register_uninstall_hook( __FILE__, array( new GravityFormLocator\Core, 'uninstall' ) );

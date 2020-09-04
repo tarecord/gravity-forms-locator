@@ -8,10 +8,12 @@
  * @since      File available since Release 1.0.0
  */
 
+namespace GravityFormLocator;
+
 /**
  * Extends WP_Background_Process and sets up a new background process.
  */
-class WP_Scan_Existing_Forms extends WP_Background_Process {
+class ScanExistingFormProcess extends WP_Background_Process {
 
 	/**
 	 * The background process action name.

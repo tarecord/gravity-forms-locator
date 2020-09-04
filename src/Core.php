@@ -8,10 +8,14 @@
  * @since      File available since Release 1.0.0
  */
 
+namespace GravityFormLocator;
+
+use WP_Query;
+
 /**
  * The main class
  */
-class Gravity_Form_Locator {
+class Core {
 
 	/**
 	 * Construct the instance
@@ -90,11 +94,7 @@ class Gravity_Form_Locator {
 			delete_transient( 'gfl_scan_complete' );
 		}
 
-		require_once plugin_dir_path( __DIR__ ) . 'vendor/class-wp-async-request.php';
-		require_once plugin_dir_path( __DIR__ ) . 'vendor/class-wp-background-process.php';
-		require_once plugin_dir_path( __FILE__ ) . 'class-wp-scan-existing-forms.php';
-
-		$this->scan_site_process = new WP_Scan_Existing_Forms();
+		$this->scan_site_process = new ScanExistingFormProcess();
 
 	}
 
@@ -406,14 +406,4 @@ class Gravity_Form_Locator {
 		</div>
 		<?php
 	}
-}
-
-// Include WP_List_Table class.
-if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-}
-
-// Include the Form_Locations_Table class.
-if ( ! class_exists( 'Form_Locations_Table' ) ) {
-	require_once( plugin_dir_path( __FILE__ ) . 'class-form-locations-table.php' );
 }

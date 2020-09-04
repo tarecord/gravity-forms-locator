@@ -8,10 +8,14 @@
  * @since      File available since Release 1.0.0
  */
 
+namespace GravityFormLocator;
+
+use WP_List_Table;
+
 /**
  * The Form_Locations_Table class extends WP_List_Table and creates the table
  */
-class Form_Locations_Table extends WP_List_Table {
+class FormLocationsTable extends WP_List_Table {
 
 	/**
 	 * Class constructor
