@@ -71,7 +71,7 @@ class FormLocationsTable extends WP_List_Table {
 	 */
 	function column_form_id( $item ) {
 
-		$form = GFAPI::get_form( $item['form_id'] );
+		$form = \GFAPI::get_form( $item['form_id'] );
 
 		// Form does not exist.
 		if ( ! $form ) {
