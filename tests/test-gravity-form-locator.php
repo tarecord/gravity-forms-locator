@@ -1,32 +1,32 @@
 <?php
 /**
- * Class Gravity_Form_LocatorTest
+ * Class CoreTest
  *
  * @package Gravity_Form_Locator
  */
 use PHPUnit\Framework\TestCase;
 
 /**
- * Responsible for testing Gravity_Form_Locator.
+ * Responsible for testing Core.
  */
-class Gravity_Form_LocatorTest extends TestCase {
+class CoreTest extends TestCase {
 
 	/**
 	 * The instantiated class.
 	 *
-	 * @var $gravity_form_locator
+	 * @var $core
 	 */
-	protected $gravity_form_locator;
+	protected $core;
 
 	public function setUp() {
-		$this->gravity_form_locator = new Gravity_Form_Locator();
+		$this->core = new Core();
     }
 
 	/**
      * @dataProvider data_get_shortcode_ids
      */
 	public function test_get_shortcode_ids( $shortcodes, $expected ) {
-		$result = $this->gravity_form_locator->get_shortcode_ids( $shortcodes );
+		$result = $this->core->get_shortcode_ids( $shortcodes );
 		$this->assertEquals( $expected, $result );
 	}
 

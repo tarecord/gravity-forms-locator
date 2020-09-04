@@ -40,13 +40,13 @@ class ScanExistingFormProcess extends WP_Background_Process {
 
 		$pattern = get_shortcode_regex( array( 'gravityform' ) );
 
-		$gravity_form_locator = new Gravity_Form_Locator();
+		$core = new Core();
 
-		$form_ids = $gravity_form_locator->check_for_forms( $content, $pattern );
+		$form_ids = $core->check_for_forms( $content, $pattern );
 
 		if ( ! empty( $form_ids ) ) {
 
-			$gravity_form_locator->add_form_post_relations( $form_ids, $post->ID );
+			$core->add_form_post_relations( $form_ids, $post->ID );
 
 		}
 
