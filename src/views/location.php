@@ -8,9 +8,9 @@
  * @since      File available since Release 1.0.0
  */
 
-namespace GravityFormLocator\Views;
+namespace TAR\GravityFormLocator\Views;
 
-use GravityFormLocator\FormLocationsTable;
+use TAR\GravityFormLocator\FormLocationsTable;
 
 ?>
 

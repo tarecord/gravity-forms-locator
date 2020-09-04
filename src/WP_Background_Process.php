@@ -5,7 +5,7 @@
  * @package WP-Background-Processing
  */
 
-namespace GravityFormLocator;
+namespace TAR\GravityFormLocator;
 
 /**
  * Abstract WP_Background_Process class.

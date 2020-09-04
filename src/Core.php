@@ -8,7 +8,7 @@
  * @since      File available since Release 1.0.0
  */
 
-namespace GravityFormLocator;
+namespace TAR\GravityFormLocator;
 
 use WP_Query;
 

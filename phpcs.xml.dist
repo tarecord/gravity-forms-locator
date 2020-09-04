@@ -79,6 +79,7 @@
 		<properties>
 			<property name="prefixes" type="array">
 				<element value="gfl"/>
+				<element value="tar"/>
 			</property>
 		</properties>
 	</rule>

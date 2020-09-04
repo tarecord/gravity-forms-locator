@@ -8,7 +8,7 @@
  * @since      File available since Release 1.0.0
  */
 
-namespace GravityFormLocator;
+namespace TAR\GravityFormLocator;
 
 /**
  * Extends WP_Background_Process and sets up a new background process.
