@@ -21,9 +21,6 @@ class Core {
 	 * Construct the instance
 	 */
 	public function __construct() {
-
-		$this->init();
-
 	}
 
 	/**

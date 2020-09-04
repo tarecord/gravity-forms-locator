@@ -84,8 +84,9 @@ function gfl_dependency_check() {
 	}
 }
 
-$gfl_plugin = new GravityFormLocator\Core();
-
 // Handle activation and uninstalling.
 register_activation_hook( __FILE__, array( GravityFormLocator\Core::class, 'activate' ) );
 register_uninstall_hook( __FILE__, array( GravityFormLocator\Core::class, 'uninstall' ) );
+
+$gfl_plugin = new GravityFormLocator\Core();
+$gfl_plugin->init();
