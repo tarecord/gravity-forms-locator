@@ -16,3 +16,19 @@ Additionally, when editing a form in the backend, there is a "Locations" tab so 
 ## Installation
 
 Install Gravity Form Locator via the plugin directory, or upload the files manually to your server and follow the on-screen instructions.
+
+## Testing
+
+1. Install PHP Unit via Composer
+```sh
+~ composer install
+```
+2. Set up local database (Here's [a quick walkthrough to install MySQL on mac](https://tableplus.com/blog/2018/11/how-to-download-mysql-mac.html#3-using-homebrew-service-to-download))
+3. Install the WordPress tests
+```sh
+~ ./bin/install-wp-tests.sh <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]
+```
+4. Run the tests
+```sh
+~ ./vendor/bin/phpunit
+```

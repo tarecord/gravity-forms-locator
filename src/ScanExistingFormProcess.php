@@ -8,10 +8,14 @@
  * @since      File available since Release 1.0.0
  */
 
+namespace TAR\GravityFormLocator;
+
+use TAR\GravityFormLocator\Core;
+
 /**
  * Extends WP_Background_Process and sets up a new background process.
  */
-class WP_Scan_Existing_Forms extends WP_Background_Process {
+class ScanExistingFormProcess extends WP_Background_Process {
 
 	/**
 	 * The background process action name.
@@ -32,19 +36,15 @@ class WP_Scan_Existing_Forms extends WP_Background_Process {
 	 * @return mixed
 	 */
 	protected function task( $post ) {
-
-		// Grab the content from the form post.
-		$content = stripslashes( $post->post_content );
+		$core = new Core();
 
 		$pattern = get_shortcode_regex( array( 'gravityform' ) );
 
-		$gravity_form_locator = new Gravity_Form_Locator();
-
-		$form_ids = $gravity_form_locator->check_for_forms( $content, $pattern );
+		$form_ids = $core->check_for_forms( $post, $pattern );
 
 		if ( ! empty( $form_ids ) ) {
 
-			$gravity_form_locator->add_form_post_relations( $form_ids, $post->ID );
+			$core->add_form_post_relations( $form_ids, $post->ID );
 
 		}
 

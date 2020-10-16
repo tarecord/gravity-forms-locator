@@ -8,18 +8,27 @@
  * @since      File available since Release 1.0.0
  */
 
+namespace TAR\GravityFormLocator;
+
+use WP_Query;
+
 /**
  * The main class
  */
-class Gravity_Form_Locator {
+class Core {
+
+	/**
+	 * The form scan process.
+	 *
+	 * @var TAR\GravityFormLocator\ScanExistingFormProcess
+	 */
+	private $scan_site_process;
 
 	/**
 	 * Construct the instance
 	 */
 	public function __construct() {
-
-		$this->init();
-
+		$this->scan_site_process = new ScanExistingFormProcess();
 	}
 
 	/**
@@ -89,13 +98,6 @@ class Gravity_Form_Locator {
 			delete_transient( 'gfl_scan_running' );
 			delete_transient( 'gfl_scan_complete' );
 		}
-
-		require_once plugin_dir_path( __DIR__ ) . 'vendor/class-wp-async-request.php';
-		require_once plugin_dir_path( __DIR__ ) . 'vendor/class-wp-background-process.php';
-		require_once plugin_dir_path( __FILE__ ) . 'class-wp-scan-existing-forms.php';
-
-		$this->scan_site_process = new WP_Scan_Existing_Forms();
-
 	}
 
 	/**
@@ -136,9 +138,9 @@ class Gravity_Form_Locator {
 		if ( 'scan_for_forms' === $_POST['process'] ) {
 			$this->scan();
 			set_transient( 'gfl_scan_running', true, HOUR_IN_SECONDS );
-			wp_redirect( admin_url( 'admin.php?page=locations' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=locations' ) );
+			exit();
 		}
-
 	}
 
 	/**
@@ -154,7 +156,7 @@ class Gravity_Form_Locator {
 		$gform_form_page_table = $wpdb->prefix . 'gform_form_page';
 
 		// Check if table exists before trying to delete it.
-		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $gform_form_page_table ) ) == $gform_form_page_table ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $gform_form_page_table ) ) === $gform_form_page_table ) {
 
 			$wpdb->query( $wpdb->prepare( 'DROP TABLE %s;', $gform_form_page_table ) );
 
@@ -203,30 +205,30 @@ class Gravity_Form_Locator {
 	/**
 	 * Checks for the form shortcode in the post content
 	 *
-	 * @param  string $content The post content to search in.
-	 * @param  string $pattern The regex pattern to match the form shortcode.
+	 * @param object $post    The post object to search in.
+	 * @param string $pattern The regex pattern to match the form shortcode.
 	 *
-	 * @return array The form shortcodes
+	 * @return mixed The form shortcodes or false.
 	 */
-	public function check_for_forms( $content, $pattern ) {
+	public function check_for_forms( $post, $pattern ) {
 
+		$matches  = array();
 		$form_ids = array();
 
-		if ( has_block( 'gravityforms/form', $content ) ) {
-			$blocks = parse_blocks( $content );
+		if ( function_exists( 'has_block' ) && has_block( 'gravityforms/form', $post->post_content ) ) {
+			$blocks = parse_blocks( $post->post_content );
 
-			foreach( $blocks as $block ) {
+			foreach ( $blocks as $block ) {
 				if ( 'gravityforms/form' === $block['blockName'] ) {
 					array_push( $form_ids, intval( $block['attrs']['formId'] ) );
 				}
 			}
 		}
 
-		preg_match_all( '/' . $pattern . '/s', $content, $matches );
-		array_key_exists( 2, $matches );
+		preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches );
 
-		// Check if shortcode exists in the content.
-		if ( in_array( 'gravityform', $matches[2] ) ) {
+		// Check if at least 1 shortcode was found.
+		if ( '' !== $matches[0][0] ) {
 			$forms = $this->get_shortcode_ids( $matches[0] );
 			if ( is_array( $forms ) ) {
 				$form_ids = array_merge( $form_ids, $forms );
@@ -368,16 +370,13 @@ class Gravity_Form_Locator {
 	}
 
 	/**
-	 * Add the location view
-	 *
-	 * @param string $view  The view to use the table in.
-	 * @param int    $id    The id of the menu item.
+	 * Add the location view.
 	 *
 	 * @return void
 	 */
-	public function add_location_view( $view = null, $id = 0 ) {
+	public function add_location_view() {
 
-		require_once( plugin_dir_path( __DIR__ ) . 'includes/location.php' );
+		include_once dirname( __FILE__ ) . '/views/location.php';
 
 	}
 
@@ -406,14 +405,4 @@ class Gravity_Form_Locator {
 		</div>
 		<?php
 	}
-}
-
-// Include WP_List_Table class.
-if ( ! class_exists( 'WP_List_Table' ) ) {
-	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
-}
-
-// Include the Form_Locations_Table class.
-if ( ! class_exists( 'Form_Locations_Table' ) ) {
-	require_once( plugin_dir_path( __FILE__ ) . 'class-form-locations-table.php' );
 }
