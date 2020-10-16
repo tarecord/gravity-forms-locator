@@ -18,9 +18,17 @@ use WP_Query;
 class Core {
 
 	/**
+	 * The form scan process.
+	 *
+	 * @var TAR\GravityFormLocator\ScanExistingFormProcess
+	 */
+	private $scan_site_process;
+
+	/**
 	 * Construct the instance
 	 */
 	public function __construct() {
+		$this->scan_site_process = new ScanExistingFormProcess();
 	}
 
 	/**
@@ -90,9 +98,6 @@ class Core {
 			delete_transient( 'gfl_scan_running' );
 			delete_transient( 'gfl_scan_complete' );
 		}
-
-		$this->scan_site_process = new ScanExistingFormProcess();
-
 	}
 
 	/**
