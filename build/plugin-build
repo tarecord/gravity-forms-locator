@@ -7,8 +7,8 @@ $PLUGIN_SLUG = $argv[3];
 $cleanup = true;
 $build_cfg_dir = getcwd() . '/build';
 $root_dir = dirname( $build_cfg_dir );
-$src_dir = "$root_dir/src/$PLUGIN_SLUG";
-$main_plugin_file = "$src_dir/gravity-form-locator.php";
+$src_dir = "$root_dir";
+$main_plugin_file = "$root_dir/gravity-form-locator.php";
 $tmp_dir = "$root_dir/wp-build";
 $dest_dir = "$tmp_dir/$PLUGIN_SLUG";
 if ( !file_exists( $main_plugin_file ) ) {
