@@ -133,9 +133,9 @@ class Core {
 		if ( 'scan_for_forms' === $_POST['process'] ) {
 			$this->scan();
 			set_transient( 'gfl_scan_running', true, HOUR_IN_SECONDS );
-			wp_redirect( admin_url( 'admin.php?page=locations' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=locations' ) );
+			exit();
 		}
-
 	}
 
 	/**
