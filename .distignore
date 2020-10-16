@@ -1,0 +1,11 @@
+assets/
+bin/
+build/
+tests/
+.editorconfig
+.gitignore
+.travis.yml
+CHANGELOG.md
+phpcs.xml.dist
+phpunit.xml.dist
+README.md
