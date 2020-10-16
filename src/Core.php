@@ -205,33 +205,33 @@ class Core {
 	/**
 	 * Checks for the form shortcode in the post content
 	 *
-	 * @param  string $content The post content to search in.
-	 * @param  string $pattern The regex pattern to match the form shortcode.
+	 * @param object $post    The post object to search in.
+	 * @param string $pattern The regex pattern to match the form shortcode.
 	 *
 	 * @return mixed The form shortcodes or false.
 	 */
-	public function check_for_forms( $content, $pattern ) {
+	public function check_for_forms( $post, $pattern ) {
 
+		$matches  = array();
 		$form_ids = array();
 
-		if ( function_exists( 'has_block' ) && has_block( 'gravityforms/form', $content ) ) {
-			$blocks = parse_blocks( $content );
+		if ( function_exists( 'has_block' ) && has_block( 'gravityforms/form', $post->post_content ) ) {
+			$blocks = parse_blocks( $post->post_content );
 
 			foreach ( $blocks as $block ) {
 				if ( 'gravityforms/form' === $block['blockName'] ) {
 					array_push( $form_ids, intval( $block['attrs']['formId'] ) );
 				}
 			}
-		} else {
-			preg_match_all( '/' . $pattern . '/s', $content, $matches );
-			array_key_exists( 2, $matches );
+		}
 
-			// Check if shortcode exists in the content.
-			if ( in_array( 'gravityform', $matches[2], true ) ) {
-				$forms = $this->get_shortcode_ids( $matches[0] );
-				if ( is_array( $forms ) ) {
-					$form_ids = array_merge( $form_ids, $forms );
-				}
+		preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches );
+
+		// Check if shortcode exists in the post.
+		if ( in_array( 'gravityform', $matches, true ) ) {
+			$forms = $this->get_shortcode_ids( $matches[0] );
+			if ( is_array( $forms ) ) {
+				$form_ids = array_merge( $form_ids, $forms );
 			}
 		}
 
