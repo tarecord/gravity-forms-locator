@@ -66,7 +66,7 @@ script:
     fi
 
 before_deploy:
-  - zip -r gf-form-locator.zip src/gf-form-locator
+  - zip -r gf-form-locator.zip . -x .DS_Store debug.log .git/\* bin/\* build/\* tests/\* .editorconfig .gitignore .travis.yml README.md CHANGELOG.md composer.json composer.lock phpcs.xml.dist phpunit.xml.dist
 
 deploy:
   # Upload .zip to Github release
