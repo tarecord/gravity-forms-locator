@@ -4,6 +4,7 @@
 - /bin
 - /build
 - /tests
+- /wp-build
 - /.editorconfig
 - /.gitignore
 - /.travis.yml
