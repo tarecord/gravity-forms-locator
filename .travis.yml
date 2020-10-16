@@ -81,6 +81,7 @@ deploy:
   - provider: script
     script:
       - php build/plugin-build $WP_ORG_PASSWORD $WP_ORG_USERNAME gf-form-locator
+    skip_cleanup: true
     on:
       tags: true
       php: 7.2
