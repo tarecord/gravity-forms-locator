@@ -1,5 +1,8 @@
 # Changelog #
 
+### 1.4.2 ###
+* Fixed deployment process
+
 ### 1.4.1 ###
 * Fixed plugin build process
 
