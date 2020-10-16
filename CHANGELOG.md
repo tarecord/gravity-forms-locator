@@ -1,5 +1,8 @@
 # Changelog #
 
+### 1.4.1 ###
+* Fixed plugin build process
+
 ### 1.4.0 ###
 * Refactored plugin to help with testing and maintainability.
 * Fixed backwards compatibility for sites running WordPress < 5.0.
