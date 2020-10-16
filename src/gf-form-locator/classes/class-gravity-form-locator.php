@@ -105,6 +105,12 @@ class Gravity_Form_Locator {
 	 */
 	public function scan() {
 
+		global $wpdb;
+		$gform_form_page_table = $wpdb->prefix . 'gform_form_page';
+		$wpdb->query(
+			$wpdb->prepare( 'TRUNCATE TABLE %s', $gform_form_page_table )
+		);
+
 		$args = array(
 			'post_type' => array( 'page', 'post' ),
 		);
