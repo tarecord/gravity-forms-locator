@@ -19,7 +19,16 @@ Install Gravity Form Locator via the plugin directory, or upload the files manua
 
 ## Testing
 
-[Human Made has a docker container](https://github.com/humanmade/plugin-tester) for speeding up testing. Use it while within this project's root directory:
+1. Install PHP Unit via Composer
+```sh
+~ composer install
 ```
-docker run --rm -v "$PWD:/code" humanmade/plugin-tester
+2. Set up local database (Here's [a quick walkthrough to install MySQL on mac](https://tableplus.com/blog/2018/11/how-to-download-mysql-mac.html#3-using-homebrew-service-to-download))
+3. Install the WordPress tests
+```sh
+~ ./bin/install-wp-tests.sh <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]
+```
+4. Run the tests
+```sh
+~ ./vendor/bin/phpunit
 ```
