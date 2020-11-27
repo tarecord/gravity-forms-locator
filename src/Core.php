@@ -175,6 +175,17 @@ class Core {
 	 */
 	public function update_form_page_id( $post_id, $post, $update ) {
 
+		$valid_post_types = get_post_types(
+			array(
+				'public' => true,
+			)
+		);
+
+		// Bail if current post type is not public (i.e. not a post, page, attachment or custom post type).
+		if ( ! key_exists( $post->post_type, $valid_post_types ) ) {
+			return;
+		}
+
 		// If this is a revision don't do anything.
 		if ( wp_is_post_revision( $post_id ) ) {
 			return;
