@@ -10,7 +10,7 @@
 
 namespace TAR\GravityFormLocator;
 
-use TAR\GravityFormLocator\Core;
+use TAR\GravityFormLocator\FormPostRelation;
 
 /**
  * Extends WP_Background_Process and sets up a new background process.
@@ -44,7 +44,7 @@ class ScanExistingFormProcess extends WP_Background_Process {
 
 		if ( ! empty( $form_ids ) ) {
 
-			$core->add_form_post_relations( $form_ids, $post );
+			( new FormPostRelation() )->add( $form_ids, $post );
 
 		}
 

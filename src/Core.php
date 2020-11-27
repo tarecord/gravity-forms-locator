@@ -201,15 +201,14 @@ class Core {
 		if ( $update ) {
 
 			// Remove form references and rescan post.
-			global $wpdb;
-			$wpdb->delete( $wpdb->prefix . 'gform_form_page', array( 'post_id' => $post_id ) );
-			$this->add_form_post_relations( $form_ids, $post_id );
+			( new FormPostRelation() )->remove( $post_id );
+			( new FormPostRelation() )->add( $form_ids, $post_id );
 
 		} else {
 
 			// Does the post have any forms?
 			if ( $form_ids ) {
-				$this->add_form_post_relations( $form_ids, $post_id );
+				( new FormPostRelation() )->add( $form_ids, $post_id );
 			}
 		}
 	}
@@ -277,49 +276,6 @@ class Core {
 		}
 
 		return false;
-	}
-
-
-	/**
-	 * Creates a relationship between form_ids and a post.
-	 *
-	 * @param array $form_ids The ids of the forms.
-	 * @param int   $post_id  The id of the post.
-	 */
-	public function add_form_post_relations( $form_ids = array(), $post_id ) {
-
-		global $wpdb;
-
-		// Define the table Name.
-		$wpdb->gform_form_page_table = $wpdb->prefix . 'gform_form_page';
-
-		foreach ( $form_ids as $form_id ) {
-
-			// Check to see if the form/post relation already exists in the table.
-			$form_post_count = $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT COUNT(*) FROM {$wpdb->gform_form_page_table} WHERE form_id = %d AND post_id = %d",
-					$form_id,
-					$post_id
-				)
-			);
-
-			// If the form and post don't already have a relation.
-			if ( intval( $form_post_count ) < 1 ) {
-
-				$wpdb->insert(
-					$wpdb->gform_form_page_table,
-					array(
-						'form_id' => $form_id,
-						'post_id' => $post_id,
-					),
-					array(
-						'%d',
-						'%d',
-					)
-				);
-			}
-		}
 	}
 
 	/**
