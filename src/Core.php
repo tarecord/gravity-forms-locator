@@ -239,7 +239,7 @@ class Core {
 		preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches );
 
 		// Check if at least 1 shortcode was found.
-		if ( '' !== $matches[0][0] ) {
+		if ( ! empty( $matches[0] ) && '' !== $matches[0][0] ) {
 			$forms = $this->get_shortcode_ids( $matches[0] );
 			if ( is_array( $forms ) ) {
 				$form_ids = array_merge( $form_ids, $forms );
