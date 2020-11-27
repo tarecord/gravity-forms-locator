@@ -31,7 +31,7 @@ class ScanExistingFormProcess extends WP_Background_Process {
 	 * in the next pass through. Or, return false to remove the
 	 * item from the queue.
 	 *
-	 * @param mixed $post Queue item to iterate over.
+	 * @param mixed $post The current post ID to iterate over in the Queue.
 	 *
 	 * @return mixed
 	 */
@@ -44,7 +44,7 @@ class ScanExistingFormProcess extends WP_Background_Process {
 
 		if ( ! empty( $form_ids ) ) {
 
-			$core->add_form_post_relations( $form_ids, $post->ID );
+			$core->add_form_post_relations( $form_ids, $post );
 
 		}
 

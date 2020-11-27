@@ -107,14 +107,17 @@ class Core {
 	 */
 	public function scan() {
 
+		// Query all posts ignoring the count and returning all.
 		$args = array(
-			'post_type' => array( 'page', 'post' ),
+			'post_type'     => array( 'page', 'post' ),
+			'no_found_rows' => true,
+			'nopaging'      => true,
 		);
 
 		$post_query = new WP_Query( $args );
 
 		foreach ( $post_query->posts as $post ) {
-			$this->scan_site_process->push_to_queue( $post );
+			$this->scan_site_process->push_to_queue( $post->ID );
 		}
 
 		$this->scan_site_process->save()->dispatch();
@@ -222,6 +225,10 @@ class Core {
 	 * @return mixed The form shortcodes or false.
 	 */
 	public function check_for_forms( $post, $pattern ) {
+
+		if ( is_int( $post ) ) {
+			$post = get_post( $post );
+		}
 
 		$matches  = array();
 		$form_ids = array();
