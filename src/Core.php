@@ -58,7 +58,7 @@ class Core {
 			PRIMARY KEY (id)
 			) $charset_collate;";
 
-			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 			dbDelta( $sql );
 
 		}
@@ -334,8 +334,8 @@ class Core {
 	 */
 	public function add_form_post_action( $actions, $form_id ) {
 		$actions['locations'] = array(
-			'label'        => __( 'Locations', 'gravityforms' ),
-			'title'        => __( 'Posts this form appears on', 'gravityforms' ),
+			'label'        => __( 'Locations', 'gravity-form-locator' ),
+			'title'        => __( 'Posts this form appears on', 'gravity-form-locator' ),
 			'url'          => '?page=locations&form_id=' . $form_id,
 			'capabilities' => 'gravityforms_edit_forms',
 			'priority'     => 699,
@@ -356,10 +356,10 @@ class Core {
 		$edit_capabilities = array( 'gravityforms_edit_forms' );
 
 		$menu_items['locations'] = array(
-			'label'        => __( 'Locations', 'gravityforms' ),
-			'short_label'  => esc_html__( 'Locations', 'gravityforms' ),
+			'label'        => __( 'Locations', 'gravity-form-locator' ),
+			'short_label'  => esc_html__( 'Locations', 'gravity-form-locator' ),
 			'icon'         => '<i class="fa fa-map-marker fa-lg"></i>',
-			'title'        => __( 'Posts this form appears on', 'gravityforms' ),
+			'title'        => __( 'Posts this form appears on', 'gravity-form-locator' ),
 			'url'          => '?page=locations&form_id=' . $form_id,
 			'menu_class'   => 'gf_form_toolbar_editor',
 			'capabilities' => $edit_capabilities,
@@ -406,7 +406,12 @@ class Core {
 	public function scan_complete_notice() {
 		?>
 		<div class="notice notice-success is-dismissible">
-		<p><?php echo '<strong>Gravity Form Locator:</strong> Full site scan complete. <a href="' . admin_url( 'admin.php?page=locations' ) . '">View Form Locations</a>'; ?></p>
+		<?php
+		echo sprintf(
+			'<strong>Gravity Form Locator:</strong> Full site scan complete. <a href="%s">View Form Locations</a>',
+			esc_url( admin_url( 'admin.php?page=locations' ) )
+		);
+		?>
 		</div>
 		<?php
 	}
