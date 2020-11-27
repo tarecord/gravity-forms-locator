@@ -25,8 +25,8 @@ class FormLocationsTable extends WP_List_Table {
 
 		parent::__construct(
 			array(
-				'singular' => __( 'Location', 'gform-page-tracker' ), // singular name of the listed records.
-				'plural'   => __( 'Locations', 'gform-page-tracker' ), // plural name of the listed records.
+				'singular' => __( 'Location', 'gravity-form-locator' ), // singular name of the listed records.
+				'plural'   => __( 'Locations', 'gravity-form-locator' ), // plural name of the listed records.
 				'ajax'     => false, // should this table support ajax?
 			)
 		);
@@ -149,10 +149,10 @@ class FormLocationsTable extends WP_List_Table {
 	 */
 	function get_columns() {
 		$columns = array(
-			'form_id'      => __( 'Form Title', 'gform-page-tracker' ),
-			'post_id'      => __( 'Post Title', 'gform-page-tracker' ),
-			'post_status'  => __( 'Post Status', 'gform-page-tracker' ),
-			'post_actions' => __( 'Post Actions', 'gform-page-tracker' ),
+			'form_id'      => __( 'Form Title', 'gravity-form-locator' ),
+			'post_id'      => __( 'Post Title', 'gravity-form-locator' ),
+			'post_status'  => __( 'Post Status', 'gravity-form-locator' ),
+			'post_actions' => __( 'Post Actions', 'gravity-form-locator' ),
 		);
 		return $columns;
 	}
