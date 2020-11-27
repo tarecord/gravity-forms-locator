@@ -194,10 +194,8 @@ class Core {
 			return;
 		}
 
-		// Grab the content from the post.
-		$content  = stripslashes( $post->post_content );
 		$pattern  = get_shortcode_regex( array( 'gravityform' ) );
-		$form_ids = $this->check_for_forms( $content, $pattern );
+		$form_ids = $this->check_for_forms( $post, $pattern );
 
 		// If this is an existing post being updated.
 		if ( $update ) {
