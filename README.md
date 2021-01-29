@@ -3,6 +3,8 @@
 
 A Gravity Form add-on that shows a list of forms with the page or post they are published on.
 
+### Note: This Plugin has been archived and a new version has been started: https://github.com/tarecord/locations-add-on-for-gravity-forms
+
 ## Description
 
 The Gravity Form Locator plugin aims to solve a big hole in the design of Gravity Forms' backend interface.
