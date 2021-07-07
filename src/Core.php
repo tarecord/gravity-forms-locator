@@ -58,7 +58,7 @@ class Core {
 			PRIMARY KEY (id)
 			) $charset_collate;";
 
-			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+			require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 			dbDelta( $sql );
 
 		}
@@ -107,14 +107,17 @@ class Core {
 	 */
 	public function scan() {
 
+		// Query all posts ignoring the count and returning all.
 		$args = array(
-			'post_type' => array( 'page', 'post' ),
+			'post_type'     => array( 'page', 'post' ),
+			'no_found_rows' => true,
+			'nopaging'      => true,
 		);
 
 		$post_query = new WP_Query( $args );
 
 		foreach ( $post_query->posts as $post ) {
-			$this->scan_site_process->push_to_queue( $post );
+			$this->scan_site_process->push_to_queue( $post->ID );
 		}
 
 		$this->scan_site_process->save()->dispatch();
@@ -175,29 +178,37 @@ class Core {
 	 */
 	public function update_form_page_id( $post_id, $post, $update ) {
 
+		$valid_post_types = get_post_types(
+			array(
+				'public' => true,
+			)
+		);
+
+		// Bail if current post type is not public (i.e. not a post, page, attachment or custom post type).
+		if ( ! key_exists( $post->post_type, $valid_post_types ) ) {
+			return;
+		}
+
 		// If this is a revision don't do anything.
 		if ( wp_is_post_revision( $post_id ) ) {
 			return;
 		}
 
-		// Grab the content from the post.
-		$content  = stripslashes( $post->post_content );
 		$pattern  = get_shortcode_regex( array( 'gravityform' ) );
-		$form_ids = $this->check_for_forms( $content, $pattern );
+		$form_ids = $this->check_for_forms( $post, $pattern );
 
 		// If this is an existing post being updated.
 		if ( $update ) {
 
 			// Remove form references and rescan post.
-			global $wpdb;
-			$wpdb->delete( $wpdb->prefix . 'gform_form_page', array( 'post_id' => $post_id ) );
-			$this->add_form_post_relations( $form_ids, $post_id );
+			( new FormPostRelation() )->remove( $post_id );
+			( new FormPostRelation() )->add( $form_ids, $post_id );
 
 		} else {
 
 			// Does the post have any forms?
 			if ( $form_ids ) {
-				$this->add_form_post_relations( $form_ids, $post_id );
+				( new FormPostRelation() )->add( $form_ids, $post_id );
 			}
 		}
 	}
@@ -211,6 +222,10 @@ class Core {
 	 * @return mixed The form shortcodes or false.
 	 */
 	public function check_for_forms( $post, $pattern ) {
+
+		if ( is_int( $post ) ) {
+			$post = get_post( $post );
+		}
 
 		$matches  = array();
 		$form_ids = array();
@@ -228,7 +243,7 @@ class Core {
 		preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches );
 
 		// Check if at least 1 shortcode was found.
-		if ( '' !== $matches[0][0] ) {
+		if ( ! empty( $matches[0] ) && '' !== $matches[0][0] ) {
 			$forms = $this->get_shortcode_ids( $matches[0] );
 			if ( is_array( $forms ) ) {
 				$form_ids = array_merge( $form_ids, $forms );
@@ -263,49 +278,6 @@ class Core {
 		return false;
 	}
 
-
-	/**
-	 * Creates a relationship between form_ids and a post.
-	 *
-	 * @param array $form_ids The ids of the forms.
-	 * @param int   $post_id  The id of the post.
-	 */
-	public function add_form_post_relations( $form_ids = array(), $post_id ) {
-
-		global $wpdb;
-
-		// Define the table Name.
-		$wpdb->gform_form_page_table = $wpdb->prefix . 'gform_form_page';
-
-		foreach ( $form_ids as $form_id ) {
-
-			// Check to see if the form/post relation already exists in the table.
-			$form_post_count = $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT COUNT(*) FROM {$wpdb->gform_form_page_table} WHERE form_id = %d AND post_id = %d",
-					$form_id,
-					$post_id
-				)
-			);
-
-			// If the form and post don't already have a relation.
-			if ( intval( $form_post_count ) < 1 ) {
-
-				$wpdb->insert(
-					$wpdb->gform_form_page_table,
-					array(
-						'form_id' => $form_id,
-						'post_id' => $post_id,
-					),
-					array(
-						'%d',
-						'%d',
-					)
-				);
-			}
-		}
-	}
-
 	/**
 	 * Adds Location link to form menu
 	 *
@@ -316,8 +288,8 @@ class Core {
 	 */
 	public function add_form_post_action( $actions, $form_id ) {
 		$actions['locations'] = array(
-			'label'        => __( 'Locations', 'gravityforms' ),
-			'title'        => __( 'Posts this form appears on', 'gravityforms' ),
+			'label'        => __( 'Locations', 'gravity-form-locator' ),
+			'title'        => __( 'Posts this form appears on', 'gravity-form-locator' ),
 			'url'          => '?page=locations&form_id=' . $form_id,
 			'capabilities' => 'gravityforms_edit_forms',
 			'priority'     => 699,
@@ -338,10 +310,10 @@ class Core {
 		$edit_capabilities = array( 'gravityforms_edit_forms' );
 
 		$menu_items['locations'] = array(
-			'label'        => __( 'Locations', 'gravityforms' ),
-			'short_label'  => esc_html__( 'Locations', 'gravityforms' ),
+			'label'        => __( 'Locations', 'gravity-form-locator' ),
+			'short_label'  => esc_html__( 'Locations', 'gravity-form-locator' ),
 			'icon'         => '<i class="fa fa-map-marker fa-lg"></i>',
-			'title'        => __( 'Posts this form appears on', 'gravityforms' ),
+			'title'        => __( 'Posts this form appears on', 'gravity-form-locator' ),
 			'url'          => '?page=locations&form_id=' . $form_id,
 			'menu_class'   => 'gf_form_toolbar_editor',
 			'capabilities' => $edit_capabilities,
@@ -388,7 +360,12 @@ class Core {
 	public function scan_complete_notice() {
 		?>
 		<div class="notice notice-success is-dismissible">
-		<p><?php echo '<strong>Gravity Form Locator:</strong> Full site scan complete. <a href="' . admin_url( 'admin.php?page=locations' ) . '">View Form Locations</a>'; ?></p>
+		<?php
+		echo sprintf(
+			'<strong>Gravity Form Locator:</strong> Full site scan complete. <a href="%s">View Form Locations</a>',
+			esc_url( admin_url( 'admin.php?page=locations' ) )
+		);
+		?>
 		</div>
 		<?php
 	}
